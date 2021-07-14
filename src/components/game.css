@@ -1,0 +1,15 @@
+.wai div{
+	width: 28px;
+	height: 28px;
+	border: 1px solid white;
+	
+}
+.none{
+	background: lightgrey;
+}
+.two{
+	background: red;
+}
+.three{
+	background: red;;
+}
