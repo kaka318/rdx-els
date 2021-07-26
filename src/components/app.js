@@ -1,5 +1,7 @@
 import React from 'react';
 // import './app.css';
+import {createStore} from 'redux';
+import {Provider,connect} from 'react-redux';
 const SHAPE_ARR = [
   [[[0,1],[1,1],[2,1],[3,1]] , [[1,0],[1,1],[1,2],[1,3]] ],//一
   [[[1,0],[0,1],[1,1],[2,1]] , [[1,0],[1,1],[1,2],[0,1]] , [[1,2],[0,1],[1,1],[2,1]] , [[1,0],[1,1],[1,2],[2,1]]], // T

@@ -11,7 +11,18 @@ const clear = () => ({
   type: BLOCKS_CLEAR,
   payload: true
 });
-
+export const redo = () => ({
+  type: 'REDO'
+});
+ 
+export const undo = () => ({
+  type: 'UNDO'
+});
+ 
+export const gotoState = stateIndex => ({
+  type: 'GOTO',
+  stateIndex
+});
 export default {
   remove, BLOCKS_REMOVE,
   clear, BLOCKS_CLEAR
