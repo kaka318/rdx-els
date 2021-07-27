@@ -20,23 +20,124 @@
 // ), document.getElementById('root'));
 import React from 'react';
 // import './app.css';
-
+import store from './store/index';
+import {actionCreator} from './actions/';
 import ReactDOM from 'react-dom';
-import { createStore } from 'redux';
+// import { createStore } from 'redux';
 import { Provider, connect } from 'react-redux';
 import PropTypes from 'prop-types';
+const SHAPE_ARR = [
+  [[[0, 1], [1, 1], [2, 1], [3, 1]], [[1, 0], [1, 1], [1, 2], [1, 3]]],//一
+  [[[1, 0], [0, 1], [1, 1], [2, 1]], [[1, 0], [1, 1], [1, 2], [0, 1]], [[1, 2], [0, 1], [1, 1], [2, 1]], [[1, 0], [1, 1], [1, 2], [2, 1]]], // T
+  [[[0, 0], [0, 1], [1, 1], [2, 1]], [[0, 2], [1, 0], [1, 1], [1, 2]], [[0, 1], [1, 1], [2, 1], [2, 2]], [[1, 0], [1, 1], [1, 2], [2, 0]]], //L
+  [[[0, 1], [1, 1], [2, 1], [2, 0]], [[1, 0], [1, 1], [1, 2], [0, 0]], [[0, 0], [0, 1], [1, 0], [2, 0]], [[1, 0], [1, 1], [1, 2], [2, 2]]],  //L2
+  [[[0, 0], [1, 0], [1, 1], [2, 1]], [[1, 2], [1, 1], [2, 0], [2, 1]]], //z
+  [[[0, 1], [1, 1], [1, 0], [2, 0]], [[1, 0], [1, 1], [2, 1], [2, 2]]], //s
+  [[[1, 1], [1, 2], [2, 1], [2, 2]]], //o
+];
+const SCORE_LIST = {
+  1: 10,
+  2: 30,
+  3: 60,
+  4: 100
+}
+// App.propTypes = {
+//   x:PropTypes.number.isRequired,
+//   y:PropTypes.number.isRequired,
+//   score:PropTypes.number.isRequired,
+//   // squareArr:PropTypes.object.isRequired,
+//   // nextArr:PropTypes.object.isRequired,
+//   // arr:PropTypes.object.isRequired,
+//   onmoveDown:PropTypes.func.isRequired,
+//   onmoveLeft:PropTypes.func.isRequired,
+//   onmoveRight:PropTypes.func.isRequired,
+//   // onisRevolve:PropTypes.func.isRequired,
+// }
+// const stateData = {
+//   score: 0,
+//   // nextArr: new Array(4).fill(new Array(4).fill(0)),
+//   // arr: new Array(20).fill(new Array(10).fill(0)),
+//   // squareArr: new Array(4).fill(new Array(4).fill(0)),
+//   x: -1,
+//   y: 3,
+// }
+// function moveShape(state = stateData, action) {
+//   // const score = state.score;
+//   // const nextArr = state.nextArr;
+//   // const arr = state.arr;
+//   // const squareArr = state.squareArr;
+//   const x = state.x;
+//   const y = state.y;
+//   switch(action.type){
+//     case 83:
+//       return { x : x + 1 }
+//     // case 84:
+//     // //   this.collisionCount++;
+//     // // if (this.collisionCount >= SHAPE_ARR[this.beforeType].length) {
+//     // //   this.collisionCount = 0;
+//     // // }
+//     // // this.setState({
+//     // //   squareArr: this.state.squareArr.map((itemRow, indexRow) =>
+//     // //     itemRow.map((item, index) =>
+//     // //       SHAPE_ARR[this.beforeType][this.collisionCount].some(([x, y]) => x === indexRow && y === index) ? 1 : 0
+//     // //     )
+//     // //   )
+//     // // });
+//     //   return{
+//     //     squareArr:squareArr.map((itemRow, indexRow) =>
+//     //     itemRow.map((index) =>
+//     //       SHAPE_ARR[this.beforeType][this.collisionCount].some(([x, y]) => x === indexRow && y === index) ? 1 : 0
+//     //     )
+//     //   )
+//     //   }
+//     case 65:
+//       return { y : y - 1 }
+//     case 68:
+//       return { y : y + 1 }
+//     default:
+//       return state;
+
+//   } 
+// }
+// const moveLeft = {type:65};
+// const moveRight = {type:68};
+// const moveDown = {type:83};
+// const isRevolve = {type:84};
+// // const shapeDown = {type:'65'};
+// // const moveLeft = {type:'65'};
+function mapStateToProps(state){
+  return{
+    x:state.box.x,
+    y:state.box.y,
+    score:state.box.score,
+    // nextArr:state.nextArr,
+    // squareArr:state.squareArr,
+    // arr:state.arr,
+  }  
+}
+function mapDispatchToProps(dispatch){
+  return{
+    onmoveDown:() => dispatch(actionCreator.moveDown()),
+    onmoveLeft:() => dispatch(actionCreator.moveLeft()),
+    onmoveRight:() => dispatch(actionCreator.moveRight()),
+    // onisRevolve:() => dispatch(isRevolve),
+  }
+}
+// const store = createStore(moveShape);
+
 class App extends React.Component {
-  // constructor(props) {
-  //   super(props);
-  //   // this.state = {
-  //   //   score: 0,
-  //   //   nextArr: new Array(4).fill(new Array(4).fill(0)),
-  //   //   arr: new Array(20).fill(new Array(10).fill(0)),
-  //   //   squareArr: new Array(4).fill(new Array(4).fill(0)),
-  //   //   x: -1,
-  //   //   y: 3,
-  //   // };
-  // }
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      // score: 0,
+      nextArr: new Array(4).fill(new Array(4).fill(0)),
+      arr: new Array(20).fill(new Array(10).fill(0)),
+      squareArr: new Array(4).fill(new Array(4).fill(0)),
+      // x: -1,
+      // y: 3,
+    };
+  }
   collisionCount = 0;
   spaceCount = 0;
   collision = false;
@@ -77,48 +178,55 @@ class App extends React.Component {
   componentDidMount() {
     this.type = parseInt(Math.random() * SHAPE_ARR.length);
     this.beforeType = parseInt(Math.random() * SHAPE_ARR.length);
+    console.log(this.type)
+    console.log(this.beforeType)
     this.createShape();
     this.createNext();
+    
+    this.time = setInterval(() => this.shapeDivDown(), 500);
     // document.addEventListener('keydown', this.onKeyDown);
   }
   createShape(){
-    this.props.squareArr(this.props.squareArr.map((itemRow, indexRow) =>
+    this.setState({squareArr:this.state.squareArr.map((itemRow, indexRow) =>
         itemRow.map((index) =>
           SHAPE_ARR[this.beforeType][0].some(([x, y]) => x === indexRow && y === index) ? 1 : 0
         )
-      ));
+      )})
   }
-  // shapeDivDown() {
-  //   const GAME_OVER = this.state.arr[0].some((val) => val === 1);
-  //   if (GAME_OVER) {
-  //     alert("game over 得分为" + this.state.score);
-  //     clearInterval(this.time);
-  //   }
-  //   let nextX = this.state.x + 1;
-  //   let nextY = this.state.y;
-  //   if (this.isCollision(nextX, nextY)) {
-  //     this.setState({
-  //       arr: this.state.arr.map((itemRow, indexRow) =>
-  //         itemRow.map((item, index) =>
-  //           SHAPE_ARR[this.beforeType][this.collisionCount].some(([x, y]) => (x + this.state.x) === indexRow && (y + this.state.y) === index) ? 1 : item
-  //         )
-  //       )
-  //     });
-  //     const FULL = this.state.arr.filter((val) => !val.every((value) => value === 1));
-  //     const FULL_LENGTH = 20 - FULL.length;
-  //     if (FULL_LENGTH > 0) {
-  //       this.setState({ score: this.state.score + SCORE_LIST[FULL_LENGTH] })
-  //     }
-  //     this.setState({ arr: new Array(FULL_LENGTH).fill(new Array(10).fill(0)).concat(FULL), x: -1, y: 3 });
-  //     this.beforeType = this.type;
-  //     this.createShape();
-  //     this.type = parseInt(Math.random() * SHAPE_ARR.length)
-  //     this.createNext();
-  //     this.collisionCount = 0;
-  //   } else {
-  //     this.setState({ x: this.state.x + 1 });
-  //   }
-  // }
+
+  shapeDivDown() {
+    // this.props.x(2);
+    let curx = this.props.x
+    // const GAME_OVER = this.state.arr[0].some((val) => val === 1);
+    // if (GAME_OVER) {
+    //   alert("game over 得分为" + this.state.score);
+    //   clearInterval(this.time);
+    // }
+    // let nextX = this.state.x + 1;
+    // let nextY = this.state.y;
+    // if (this.isCollision(nextX, nextY)) {
+    //   this.setState({
+    //     arr: this.state.arr.map((itemRow, indexRow) =>
+    //       itemRow.map((item, index) =>
+    //         SHAPE_ARR[this.beforeType][this.collisionCount].some(([x, y]) => (x + this.state.x) === indexRow && (y + this.state.y) === index) ? 1 : item
+    //       )
+    //     )
+    //   });
+    //   const FULL = this.state.arr.filter((val) => !val.every((value) => value === 1));
+    //   const FULL_LENGTH = 20 - FULL.length;
+    //   if (FULL_LENGTH > 0) {
+    //     this.setState({ score: this.state.score + SCORE_LIST[FULL_LENGTH] })
+    //   }
+    //   this.setState({ arr: new Array(FULL_LENGTH).fill(new Array(10).fill(0)).concat(FULL), x: -1, y: 3 });
+    //   this.beforeType = this.type;
+    //   this.createShape();
+    //   this.type = parseInt(Math.random() * SHAPE_ARR.length)
+    //   this.createNext();
+    //   this.collisionCount = 0;
+    // } else {
+      // this.setState({ x: this.state.x + 1 });
+    // }
+  }
   // isCollision(x, y) {
   //   let collision = false;
   //   SHAPE_ARR[this.beforeType][this.collisionCount].forEach((value, index) => {
@@ -144,14 +252,16 @@ class App extends React.Component {
   //   });
   // }
   createNext() {
-      this.props.nextArr(this.props.nextArr.map((itemRow, indexRow) =>
-        itemRow.map((index) =>
-          SHAPE_ARR[this.type][0].some(([x, y]) => x === indexRow && y === index) ? 1 : 0
-        )
-      ));
+    this.setState({nextArr:this.state.nextArr.map((itemRow, indexRow) =>
+      itemRow.map((index) =>
+        SHAPE_ARR[this.beforeType][0].some(([x, y]) => x === indexRow && y === index) ? 1 : 0
+      )
+    )})
+
   }
   render() {
-    const {curx,cury,score,nextArr,squareArr,arr,onmoveDown,onmoveLeft,onmoveRight,onisRevolve} = this.props;
+    const {x,y,score} = this.props;
+    // console.log(this.props)
     const BACK_COLOR = {
       0: "lightgrey",
       1: "red",
@@ -169,7 +279,7 @@ class App extends React.Component {
 
         <div style={{ width: "300px", height: " 600px", border: "1px solid white", position: "absolute", top: "0px", left: "0px", display: "grid", gridTemplateColumns: "repeat(10,30px)", gridTemplateRows: "repeat(20,30px)" }}>
           {
-            arr.map((rowItem, rowIndex) =>
+            this.state.arr.map((rowItem, rowIndex) =>
               rowItem.map((item, index) => {
                 return <div
                   key={`${rowIndex} ${index}`}
@@ -180,9 +290,9 @@ class App extends React.Component {
             )
           },
               </div>
-        <div style={{ position: "absolute", top: curx * 30 + 1, left: cury * 30 + 1, display: "grid", gridTemplateColumns: "repeat(4,30px)", gridTemplateRows: "repeat(4,30px)" }}>
+        <div style={{ position: "absolute", top: x * 30 + 1, left: y * 30 + 1, display: "grid", gridTemplateColumns: "repeat(4,30px)", gridTemplateRows: "repeat(4,30px)" }}>
           {
-            squareArr.map((rowItem, rowIndex) =>
+            this.state.squareArr.map((rowItem, rowIndex) =>
               rowItem.map((item, index) => {
                 return <div
                   key={`${rowIndex} ${index}`}
@@ -201,7 +311,7 @@ class App extends React.Component {
                       下一块
                       <div style={{ width: "120px", height: "120px", display: "grid", gridTemplateColumns: "repeat(4,30px)", gridTemplateRows: "repeat(4,30px)" }}>
                 {
-                  nextArr.map((rowItem, rowIndex) =>
+                  this.state.nextArr.map((rowItem, rowIndex) =>
                     rowItem.map((item, index) => {
                       return <div
                         key={`${rowIndex} ${index}`}
@@ -215,121 +325,16 @@ class App extends React.Component {
             </div>
             <p>得分：<span id="score" style={{ color: "red" }}>{score}</span> </p>
             <p>游戏规则：<br /> W变形 A 左移 S 加速 D 右移</p>
-            <button onClick={onisRevolve}>上</button>
-            <button onClick={onmoveDown}>下</button>
-            <button onClick={onmoveLeft}>左</button>
-            <button onClick={onmoveRight}>右</button>
           </div>
         </div>
       </div>
     );
   }
 };
-const SHAPE_ARR = [
-  [[[0, 1], [1, 1], [2, 1], [3, 1]], [[1, 0], [1, 1], [1, 2], [1, 3]]],//一
-  [[[1, 0], [0, 1], [1, 1], [2, 1]], [[1, 0], [1, 1], [1, 2], [0, 1]], [[1, 2], [0, 1], [1, 1], [2, 1]], [[1, 0], [1, 1], [1, 2], [2, 1]]], // T
-  [[[0, 0], [0, 1], [1, 1], [2, 1]], [[0, 2], [1, 0], [1, 1], [1, 2]], [[0, 1], [1, 1], [2, 1], [2, 2]], [[1, 0], [1, 1], [1, 2], [2, 0]]], //L
-  [[[0, 1], [1, 1], [2, 1], [2, 0]], [[1, 0], [1, 1], [1, 2], [0, 0]], [[0, 0], [0, 1], [1, 0], [2, 0]], [[1, 0], [1, 1], [1, 2], [2, 2]]],  //L2
-  [[[0, 0], [1, 0], [1, 1], [2, 1]], [[1, 2], [1, 1], [2, 0], [2, 1]]], //z
-  [[[0, 1], [1, 1], [1, 0], [2, 0]], [[1, 0], [1, 1], [2, 1], [2, 2]]], //s
-  [[[1, 1], [1, 2], [2, 1], [2, 2]]], //o
-];
-const SCORE_LIST = {
-  1: 10,
-  2: 30,
-  3: 60,
-  4: 100
-}
-App.propTypes = {
-  x:PropTypes.number.isRequired,
-  y:PropTypes.number.isRequired,
-  score:PropTypes.number.isRequired,
-  squareArr:PropTypes.object.isRequired,
-  nextArr:PropTypes.object.isRequired,
-  arr:PropTypes.object.isRequired,
-  onmoveDown:PropTypes.func.isRequired,
-  onmoveLeft:PropTypes.func.isRequired,
-  onmoveRight:PropTypes.func.isRequired,
-  onisRevolve:PropTypes.func.isRequired,
-}
-const stateData = {
-  score: 0,
-  nextArr: new Array(4).fill(new Array(4).fill(0)),
-  arr: new Array(20).fill(new Array(10).fill(0)),
-  squareArr: new Array(4).fill(new Array(4).fill(0)),
-  x: -1,
-  y: 3,
-}
-function moveShape(state = stateData, action) {
-  // const score = state.score;
-  // const nextArr = state.nextArr;
-  // const arr = state.arr;
-  const squareArr = state.squareArr;
-  const x = state.x;
-  const y = state.y;
-  switch(action.type){
-    case 83:
-      return { x : x + 1 }
-    case 84:
-    //   this.collisionCount++;
-    // if (this.collisionCount >= SHAPE_ARR[this.beforeType].length) {
-    //   this.collisionCount = 0;
-    // }
-    // this.setState({
-    //   squareArr: this.state.squareArr.map((itemRow, indexRow) =>
-    //     itemRow.map((item, index) =>
-    //       SHAPE_ARR[this.beforeType][this.collisionCount].some(([x, y]) => x === indexRow && y === index) ? 1 : 0
-    //     )
-    //   )
-    // });
-      return{
-        squareArr:squareArr.map((itemRow, indexRow) =>
-        itemRow.map((index) =>
-          SHAPE_ARR[this.beforeType][this.collisionCount].some(([x, y]) => x === indexRow && y === index) ? 1 : 0
-        )
-      )
-      }
-    case 65:
-      return { y : y - 1 }
-    case 68:
-      return { y : y + 1 }
-    default:
-      return state;
-
-  } 
-}
-const moveLeft = {type:65};
-const moveRight = {type:68};
-const moveDown = {type:83};
-const isRevolve = {type:84};
-// const shapeDown = {type:'65'};
-// const moveLeft = {type:'65'};
-function mapStateToProps(state){
-  return{
-    curx:state.x,
-    cury:state.y,
-    score:state.score,
-    nextArr:state.nextArr,
-    squareArr:state.squareArr,
-    arr:state.arr,
-  }  
-}
-function mapDispatchToProps(dispatch){
-  return{
-    onmoveDown:() => dispatch(moveDown),
-    onmoveLeft:() => dispatch(moveLeft),
-    onmoveRight:() => dispatch(moveRight),
-    onisRevolve:() => dispatch(isRevolve),
-  }
-}
-const store = createStore(moveShape);
 const Tetris = connect(mapStateToProps,mapDispatchToProps)(App);
-
 ReactDOM.render(
-  <React.StrictMode>
     <Provider store={store}>
       <Tetris />
-    </Provider>
-  </React.StrictMode>,
+    </Provider>,
   document.getElementById('root')
 );

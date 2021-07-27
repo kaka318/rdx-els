@@ -1,17 +1,34 @@
-const BLOCKS_REMOVE = 'BLOCKS_REMOVE';
-const BLOCKS_CLEAR = 'BLOCKS_CLEAR';
+// const BLOCKS_REMOVE = 'BLOCKS_REMOVE';
+// const BLOCKS_CLEAR = 'BLOCKS_CLEAR';
+// const MOVE_DOWN = 'MOVE_DOWN';
+// const MOVE_LEFT = 'MOVE_LEFT';
+// const MOVE_RIGHT = 'MOVE_RIGHT';
 
+// export const remove = actionId => ({
+//   type: BLOCKS_REMOVE,
+//   payload: {actionId}
+// });
 
-const remove = actionId => ({
-  type: BLOCKS_REMOVE,
-  payload: {actionId}
+// export const clear = () => ({
+//   type: BLOCKS_CLEAR,
+// });
+export const moveLeft = () => ({
+  type:65,
 });
-
-const clear = () => ({
-  type: BLOCKS_CLEAR,
-  payload: true
+export const moveRight = () => ({
+  type:68,
 });
-export default {
-  remove, BLOCKS_REMOVE,
-  clear, BLOCKS_CLEAR
-};
+export const moveDown = () => ({
+  type:83,
+});
+export const divDown = () => ({
+  
+});
+// const isRevolve = () => ({type:84});
+// export default {
+//   // remove: BLOCKS_REMOVE,
+//   moveDown:MOVE_DOWN,
+//   moveLeft:MOVE_LEFT,
+//   moveRight:MOVE_RIGHT,
+//   // clear:BLOCKS_CLEAR
+// };

@@ -1,22 +1,22 @@
 import BoxActionCreator from '../actions/box_action_creator';
 
 export const boxInitialState = {
-  blocks: []
+  score: 0,
+  x: -1,
+  y: 3,
 };
 
-export default function(state = boxInitialState, action){
+export function boxReducer(state = boxInitialState, action){
+  const x = state.x;
+  const y = state.y;
   switch(action.type){
-    case BoxActionCreator.BLOCKS_REMOVE:
-      return {
-        ...state,
-        blocks: []
-      };
-    case BoxActionCreator.BLOCKS_CLEAR:
-      return {
-        ...state,
-        blocks: []
-      };
+    case 83:
+      return {...state, x : x + 1 }
+    case 65:
+      return {...state,y : y - 1 }
+    case 68:
+      return {...state, y : y + 1 }
     default:
-      return state;
-  }
+      return state
+  } 
 }
