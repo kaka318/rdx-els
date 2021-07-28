@@ -12,6 +12,7 @@
 // export const clear = () => ({
 //   type: BLOCKS_CLEAR,
 // });
+import store from'../store/index'
 export const moveLeft = () => ({
   type:65,
 });
@@ -27,8 +28,9 @@ export const divDown = () => ({
 export const initDown = () => ({
   type:'downinit',
 })
-export const initKeyDown = () => ({
+export const initKeyDown = (x,y) => ({
   type:'keycol',
+  payload:{x,y},
 })
 // const isRevolve = () => ({type:84});
 // export default {

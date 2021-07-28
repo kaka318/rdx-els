@@ -3,6 +3,8 @@ import store from './store/index';
 import { actionCreator } from './actions/';
 import ReactDOM from 'react-dom';
 import { Provider, connect } from 'react-redux';
+import {boxInitialState} from './reducers/boxDown_reducer';
+// import store from'./store/index';
 import PropTypes from 'prop-types';
 const SHAPE_ARR = [
   [[[0, 1], [1, 1], [2, 1], [3, 1]], [[1, 0], [1, 1], [1, 2], [1, 3]]],//一
@@ -23,9 +25,6 @@ function mapStateToProps(state) {
   return {
     x: state.box.x,
     y: state.box.y,
-    nextArr:state.box.nextArr,
-    squareArr:state.box.squareArr,
-    arr:state.box.arr,
   }
 }
 function mapDispatchToProps(dispatch) {
@@ -37,7 +36,8 @@ function mapDispatchToProps(dispatch) {
     onInitDown: () => dispatch(actionCreator.initDown()),
     onKeyDown: () => dispatch(actionCreator.initKeyDown())
   }
-}class App extends React.Component {
+}
+class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -54,6 +54,8 @@ function mapDispatchToProps(dispatch) {
   beforeType = 0;
   time = 0;
   onKeyDown = (e) => {
+    let curx = this.props.x;
+    let cury = this.props.y;
     switch (e.keyCode) {
       case 83:
         this.props.onmoveDown();
@@ -82,7 +84,7 @@ function mapDispatchToProps(dispatch) {
       default:
         break;
     }
-    if (!this.isCollision(this.props.x, this.props.y)) {
+    if (!this.isCollision(curx, cury)) {
       this.props.onKeyDown();
     }
   }
@@ -104,7 +106,7 @@ function mapDispatchToProps(dispatch) {
   shapeDivDown() {
     const GAME_OVER = this.state.arr[0].some((val) => val === 1);
     if (GAME_OVER) {
-      alert("game over 得分为" + this.props.score);
+      alert("game over 得分为" + this.state.score);
       clearInterval(this.time);
     }
     let nextX = this.props.x + 1;

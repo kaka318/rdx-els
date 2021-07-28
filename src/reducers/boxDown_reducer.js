@@ -1,10 +1,6 @@
 export const boxInitialState = {
-    score: 0,
     x: -1,
     y: 3,
-    nextArr: new Array(4).fill(new Array(4).fill(0)),
-    arr: new Array(20).fill(new Array(10).fill(0)),
-    squareArr: new Array(4).fill(new Array(4).fill(0)),
 };
 export function boxReducer(state = boxInitialState, action) {
     const x = state.x;
