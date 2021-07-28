@@ -98,7 +98,6 @@ function mapStateToProps(state) {
   return {
     x: state.box.x,
     y: state.box.y,
-    score: state.box.score,
     nextArr:state.box.nextArr,
     squareArr:state.box.squareArr,
     arr:state.box.arr,
@@ -122,7 +121,7 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      // score: 0,
+      score: 0,
       nextArr: new Array(4).fill(new Array(4).fill(0)),
       arr: new Array(20).fill(new Array(10).fill(0)),
       squareArr: new Array(4).fill(new Array(4).fill(0)),
@@ -178,18 +177,11 @@ class App extends React.Component {
     this.props.onKeyDown();
     this.setState({
       squareArr: this.state.squareArr.map((itemRow, indexRow) =>
-        itemRow.map((index) =>
+        itemRow.map((val,index) =>
           SHAPE_ARR[this.beforeType][0].some(([x, y]) => x === indexRow && y === index) ? 1 : 0
         )
       )
     })
-    // this.setState=(state)=>({
-    //   squareArr: state.squareArr.map((itemRow, indexRow) =>
-    //     itemRow.map((index) =>
-    //       SHAPE_ARR[this.beforeType][0].some(([x, y]) => x === indexRow && y === index) ? 1 : 0
-    //     )
-    //   )
-    // })
   }
   shapeDivDown() {
     const GAME_OVER = this.state.arr[0].some((val) => val === 1);
@@ -209,12 +201,11 @@ class App extends React.Component {
       });
       const FULL = this.state.arr.filter((val) => !val.every((value) => value === 1));
       const FULL_LENGTH = 20 - FULL.length;
-      // if (FULL_LENGTH > 0) {
-      //   this.setState({ score: this..score + SCORE_LIST[FULL_LENGTH] })
-      // }
+      if (FULL_LENGTH > 0) {
+        this.setState({ score: this.state.score + SCORE_LIST[FULL_LENGTH] })
+      }
       this.setState({ arr: new Array(FULL_LENGTH).fill(new Array(10).fill(0)).concat(FULL) });
       this.props.onInitDown();
-      // console.log(this.beforeType)
       this.beforeType = this.type;
       this.createShape();
       this.type = parseInt(Math.random() * SHAPE_ARR.length)
@@ -242,7 +233,7 @@ class App extends React.Component {
     }
     this.setState({
       squareArr: this.state.squareArr.map((itemRow, indexRow) =>
-        itemRow.map((index) =>
+        itemRow.map((val,index) =>
           SHAPE_ARR[this.beforeType][this.collisionCount].some(([x, y]) => x === indexRow && y === index) ? 1 : 0
         )
       )
@@ -251,8 +242,8 @@ class App extends React.Component {
   createNext() {
     this.setState({
       nextArr: this.state.nextArr.map((itemRow, indexRow) =>
-        itemRow.map((index) =>
-          SHAPE_ARR[this.beforeType][0].some(([x, y]) => x === indexRow && y === index) ? 1 : 0
+        itemRow.map((val,index) =>
+          SHAPE_ARR[this.type][0].some(([x, y]) => x === indexRow && y === index) ? 1 : 0
         )
       )
     })
@@ -320,7 +311,7 @@ class App extends React.Component {
                 }
               </div>
             </div>
-            <span>得分：<span id="score" style={{ color: "red" }}>{this.props.score}</span> </span>
+            <span>得分：<span id="score" style={{ color: "red" }}>{this.state.score}</span> </span>
             {/* <span>游戏规则：<br /> W变形 A 左移 S 加速 D 右移</span> */}
             <div>时间旅行
               <button>⬅</button>
