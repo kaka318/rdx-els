@@ -12,31 +12,65 @@
 // export const clear = () => ({
 //   type: BLOCKS_CLEAR,
 // });
-import store from'../store/index'
-export const moveLeft = () => ({
-  type:65,
-});
-export const moveRight = () => ({
-  type:68,
-});
-export const moveDown = () => ({
-  type:83,
-});
-export const divDown = () => ({
-  type:'down',
-})
-export const initDown = () => ({
-  type:'downinit',
-})
-export const initKeyDown = (x,y) => ({
-  type:'keycol',
-  payload:{x,y},
-})
-// const isRevolve = () => ({type:84});
-// export default {
-//   // remove: BLOCKS_REMOVE,
-//   moveDown:MOVE_DOWN,
-//   moveLeft:MOVE_LEFT,
-//   moveRight:MOVE_RIGHT,
-//   // clear:BLOCKS_CLEAR
-// };
+import store from '../store/index'
+// export const moveLeft = () => ({
+//   type:65,
+// });
+// export const moveRight = () => ({
+//   type:68,
+// });
+// export const moveDown = () => ({
+//   type:83,
+// });
+// export const divDown = () => ({
+//   type:'down',
+// })
+// export const initDown = () => ({
+//   type:'downinit',
+// })
+// export const initKeyDown = (x,y) => ({
+//   type:'keycol',
+//   payload:{x,y},
+// })
+export default {
+  // moveLeft(){
+  //   let action = {
+  //     type: 65,
+  //   }
+  // },
+  // // moveRight = () => ({
+  // //   type: 68,
+  // // }),
+  // moveRight(){
+  //   let action = {
+  //     type: 68,
+  //   }
+  // },
+  // // moveDown = () => ({
+  // //   type: 83,
+  // // }),
+  // moveDown(){
+  //   let action = {
+  //     type: 83,
+  //   }
+  // },
+  divDown(){
+    let action = {
+      type: 'down',
+    }
+    store.dispatch(action)
+  },
+  initDown(){
+    let action = {
+      type: 'downinit',
+    }
+    store.dispatch(action)
+  },
+  initKeyDown(x, y){
+    let action = {
+      type: 'keycol',
+      payload: { x, y },
+    }
+    store.dispatch(action)
+  }
+}
