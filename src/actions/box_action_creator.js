@@ -22,8 +22,14 @@ export const moveDown = () => ({
   type:83,
 });
 export const divDown = () => ({
-  
-});
+  type:'down',
+})
+export const initDown = () => ({
+  type:'downinit',
+})
+export const initKeyDown = () => ({
+  type:'keycol',
+})
 // const isRevolve = () => ({type:84});
 // export default {
 //   // remove: BLOCKS_REMOVE,

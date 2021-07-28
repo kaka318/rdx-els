@@ -1,11 +1,10 @@
 import BoxActionCreator from '../actions/box_action_creator';
-
-export const boxInitialState = {
-  score: 0,
-  x: -1,
-  y: 3,
-};
-
+import {boxInitialState} from'./boxDown_reducer'
+// export const boxInitialState = {
+//   score: 0,
+//   x: -1,
+//   y: 3,
+// };
 export function boxReducer(state = boxInitialState, action){
   const x = state.x;
   const y = state.y;
