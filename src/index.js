@@ -1,29 +1,7 @@
-// import React from 'react';
-// import { createStore } from 'redux';
-// import { Provider } from 'react-redux';
-// import App from './components/app';
-// // import History from './components/History'
-// import { reducers, initialState } from './reducers/index';
-// const store = createStore(
-//   reducers,
-//   initialState,
-//   moveShape
-// );
-
-// // const store = createStore(moveShape);
-// ReactDOM.render((
-//   <Provider store={store}>
-//     <div className='w-full h-full'>
-// 	  <App />
-//     </div>
-//   </Provider>
-// ), document.getElementById('root'));
 import React from 'react';
-// import './app.css';
 import store from './store/index';
 import { actionCreator } from './actions/';
 import ReactDOM from 'react-dom';
-// import { createStore } from 'redux';
 import { Provider, connect } from 'react-redux';
 import PropTypes from 'prop-types';
 const SHAPE_ARR = [
@@ -41,59 +19,6 @@ const SCORE_LIST = {
   3: 60,
   4: 100
 }
-
-// const stateData = {
-//   score: 0,
-//   // nextArr: new Array(4).fill(new Array(4).fill(0)),
-//   // arr: new Array(20).fill(new Array(10).fill(0)),
-//   // squareArr: new Array(4).fill(new Array(4).fill(0)),
-//   x: -1,
-//   y: 3,
-// }
-// function moveShape(state = stateData, action) {
-//   // const score = state.score;
-//   // const nextArr = state.nextArr;
-//   // const arr = state.arr;
-//   // const squareArr = state.squareArr;
-//   const x = state.x;
-//   const y = state.y;
-//   switch(action.type){
-//     case 83:
-//       return { x : x + 1 }
-//     // case 84:
-//     // //   this.collisionCount++;
-//     // // if (this.collisionCount >= SHAPE_ARR[this.beforeType].length) {
-//     // //   this.collisionCount = 0;
-//     // // }
-//     // // this.setState({
-//     // //   squareArr: this.state.squareArr.map((itemRow, indexRow) =>
-//     // //     itemRow.map((item, index) =>
-//     // //       SHAPE_ARR[this.beforeType][this.collisionCount].some(([x, y]) => x === indexRow && y === index) ? 1 : 0
-//     // //     )
-//     // //   )
-//     // // });
-//     //   return{
-//     //     squareArr:squareArr.map((itemRow, indexRow) =>
-//     //     itemRow.map((index) =>
-//     //       SHAPE_ARR[this.beforeType][this.collisionCount].some(([x, y]) => x === indexRow && y === index) ? 1 : 0
-//     //     )
-//     //   )
-//     //   }
-//     case 65:
-//       return { y : y - 1 }
-//     case 68:
-//       return { y : y + 1 }
-//     default:
-//       return state;
-
-//   } 
-// }
-// const moveLeft = {type:65};
-// const moveRight = {type:68};
-// const moveDown = {type:83};
-// const isRevolve = {type:84};
-// // const shapeDown = {type:'65'};
-// // const moveLeft = {type:'65'};
 function mapStateToProps(state) {
   return {
     x: state.box.x,
@@ -111,13 +36,8 @@ function mapDispatchToProps(dispatch) {
     onDown: () => dispatch(actionCreator.divDown()),
     onInitDown: () => dispatch(actionCreator.initDown()),
     onKeyDown: () => dispatch(actionCreator.initKeyDown())
-    // onisRevolve:() => dispatch(isRevolve),
   }
-}
-// const store = createStore(moveShape);
-
-class App extends React.Component {
-
+}class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -245,7 +165,6 @@ class App extends React.Component {
         )
       )
     })
-
   }
   render() {
     const BACK_COLOR = {
@@ -321,18 +240,6 @@ class App extends React.Component {
     );
   }
 };
-// App.propTypes = {
-//   x:PropTypes.number.isRequired,
-//   y:PropTypes.number.isRequired,
-//   score:PropTypes.number.isRequired,
-//   squareArr:PropTypes.object.isRequired,
-//   nextArr:PropTypes.object.isRequired,
-//   arr:PropTypes.object.isRequired,
-//   onmoveDown:PropTypes.func.isRequired,
-//   onmoveLeft:PropTypes.func.isRequired,
-//   onmoveRight:PropTypes.func.isRequired,
-//   // onisRevolve:PropTypes.func.isRequired,
-// }
 const Tetris = connect(mapStateToProps, mapDispatchToProps)(App);
 ReactDOM.render(
   <Provider store={store}>
