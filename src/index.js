@@ -3,7 +3,7 @@ import store from './store/index';
 import { actionCreator } from './actions/';
 import ReactDOM from 'react-dom';
 import { Provider, connect } from 'react-redux';
-import {boxInitialState} from './reducers/boxDown_reducer';
+import box_action_creator from './actions/box_action_creator'
 // import store from'./store/index';
 import PropTypes from 'prop-types';
 const SHAPE_ARR = [
@@ -21,25 +21,28 @@ const SCORE_LIST = {
   3: 60,
   4: 100
 }
-function mapStateToProps(state) {
-  return {
-    x: state.box.x,
-    y: state.box.y,
-  }
-}
-function mapDispatchToProps(dispatch) {
-  return {
-    onmoveDown: () => dispatch(actionCreator.moveDown()),
-    onmoveLeft: () => dispatch(actionCreator.moveLeft()),
-    onmoveRight: () => dispatch(actionCreator.moveRight()),
-    onDown: () => dispatch(actionCreator.divDown()),
-    onInitDown: () => dispatch(actionCreator.initDown()),
-    onKeyDown: () => dispatch(actionCreator.initKeyDown())
-  }
-}
+// function mapStateToProps(state) {
+//   return {
+//     x: state.box.x,
+//     y: state.box.y,
+//   }
+// }
+// function mapDispatchToProps(dispatch) {
+//   return {
+//     // onmoveDown: () => dispatch(actionCreator.moveDown()),
+//     // onmoveLeft: () => dispatch(actionCreator.moveLeft()),
+//     // onmoveRight: () => dispatch(actionCreator.moveRight()),
+//     onDown: () => dispatch(actionCreator.divDown()),
+//     onInitDown: () => dispatch(actionCreator.initDown()),
+//     onKeyDown: () => dispatch(actionCreator.initKeyDown())
+//   }
+// }
 class App extends React.Component {
   constructor(props) {
     super(props);
+    store.subscribe(()=>{
+      this.setState({})
+    })
     this.state = {
       score: 0,
       nextArr: new Array(4).fill(new Array(4).fill(0)),
@@ -54,20 +57,24 @@ class App extends React.Component {
   beforeType = 0;
   time = 0;
   onKeyDown = (e) => {
-    let curx = this.props.x;
-    let cury = this.props.y;
+    let {x,y} = store.getState();
+    let curx = x;
+    let cury = y;
     switch (e.keyCode) {
       case 83:
-        this.props.onmoveDown();
+        // this.props.onmoveDown();
+        curx++;
         break;
       case 87:
         this.isRevolve();
         break;
       case 65:
-        this.props.onmoveLeft();
+        cury--;
+        // this.props.onmoveLeft();
         break;
       case 68:
-        this.props.onmoveRight();
+        cury++;
+        // this.props.onmoveRight();
         break;
       case 32:
         if (this.spaceCount === 0) {
@@ -85,7 +92,7 @@ class App extends React.Component {
         break;
     }
     if (!this.isCollision(curx, cury)) {
-      this.props.onKeyDown();
+      box_action_creator.initKeyDown(curx,cury)
     }
   }
   componentDidMount() {
@@ -94,7 +101,6 @@ class App extends React.Component {
     document.addEventListener('keydown', this.onKeyDown);
   }
   createShape() {
-    this.props.onKeyDown();
     this.setState({
       squareArr: this.state.squareArr.map((itemRow, indexRow) =>
         itemRow.map((val,index) =>
@@ -125,14 +131,14 @@ class App extends React.Component {
         this.setState({ score: this.state.score + SCORE_LIST[FULL_LENGTH] })
       }
       this.setState({ arr: new Array(FULL_LENGTH).fill(new Array(10).fill(0)).concat(FULL) });
-      this.props.onInitDown();
+      box_action_creator.initDown();
       this.beforeType = this.type;
       this.createShape();
       this.type = parseInt(Math.random() * SHAPE_ARR.length)
       this.createNext();
       this.collisionCount = 0;
     } else {
-      this.props.onDown();
+      box_action_creator.divDown();
     }
   }
   isCollision(x, y) {
@@ -169,6 +175,9 @@ class App extends React.Component {
     })
   }
   render() {
+    
+    let {x,y} = store.getState();
+    console.log(store.getState());
     const BACK_COLOR = {
       0: "lightgrey",
       1: "red",
@@ -197,7 +206,7 @@ class App extends React.Component {
             )
           },
               </div>
-        <div style={{ position: "absolute", top: this.props.x * 30 + 1, left: this.props.y * 30 + 1, display: "grid", gridTemplateColumns: "repeat(4,30px)", gridTemplateRows: "repeat(4,30px)" }}>
+        <div style={{ position: "absolute", top: x * 30 + 1, left: y * 30 + 1, display: "grid", gridTemplateColumns: "repeat(4,30px)", gridTemplateRows: "repeat(4,30px)" }}>
           {
             this.state.squareArr.map((rowItem, rowIndex) =>
               rowItem.map((item, index) => {
@@ -242,10 +251,10 @@ class App extends React.Component {
     );
   }
 };
-const Tetris = connect(mapStateToProps, mapDispatchToProps)(App);
+// const Tetris = connect(mapStateToProps, mapDispatchToProps)(App);
 ReactDOM.render(
   <Provider store={store}>
-    <Tetris />
+    <App />
   </Provider>,
   document.getElementById('root')
 );
