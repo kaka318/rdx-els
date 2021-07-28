@@ -1,11 +1,8 @@
 import React from 'react';
 import store from './store/index';
-import { actionCreator } from './actions/';
 import ReactDOM from 'react-dom';
 import { Provider, connect } from 'react-redux';
 import box_action_creator from './actions/box_action_creator'
-// import store from'./store/index';
-import PropTypes from 'prop-types';
 const SHAPE_ARR = [
   [[[0, 1], [1, 1], [2, 1], [3, 1]], [[1, 0], [1, 1], [1, 2], [1, 3]]],//一
   [[[1, 0], [0, 1], [1, 1], [2, 1]], [[1, 0], [1, 1], [1, 2], [0, 1]], [[1, 2], [0, 1], [1, 1], [2, 1]], [[1, 0], [1, 1], [1, 2], [2, 1]]], // T
@@ -21,28 +18,9 @@ const SCORE_LIST = {
   3: 60,
   4: 100
 }
-// function mapStateToProps(state) {
-//   return {
-//     x: state.box.x,
-//     y: state.box.y,
-//   }
-// }
-// function mapDispatchToProps(dispatch) {
-//   return {
-//     // onmoveDown: () => dispatch(actionCreator.moveDown()),
-//     // onmoveLeft: () => dispatch(actionCreator.moveLeft()),
-//     // onmoveRight: () => dispatch(actionCreator.moveRight()),
-//     onDown: () => dispatch(actionCreator.divDown()),
-//     onInitDown: () => dispatch(actionCreator.initDown()),
-//     onKeyDown: () => dispatch(actionCreator.initKeyDown())
-//   }
-// }
 class App extends React.Component {
   constructor(props) {
     super(props);
-    store.subscribe(()=>{
-      this.setState({})
-    })
     this.state = {
       score: 0,
       nextArr: new Array(4).fill(new Array(4).fill(0)),
@@ -62,7 +40,6 @@ class App extends React.Component {
     let cury = y;
     switch (e.keyCode) {
       case 83:
-        // this.props.onmoveDown();
         curx++;
         break;
       case 87:
@@ -70,11 +47,9 @@ class App extends React.Component {
         break;
       case 65:
         cury--;
-        // this.props.onmoveLeft();
         break;
       case 68:
         cury++;
-        // this.props.onmoveRight();
         break;
       case 32:
         if (this.spaceCount === 0) {
@@ -96,6 +71,9 @@ class App extends React.Component {
     }
   }
   componentDidMount() {
+    store.subscribe(()=>{
+      this.setState({})
+    })
     this.type = parseInt(Math.random() * SHAPE_ARR.length);
     this.beforeType = parseInt(Math.random() * SHAPE_ARR.length);
     document.addEventListener('keydown', this.onKeyDown);
@@ -115,13 +93,13 @@ class App extends React.Component {
       alert("game over 得分为" + this.state.score);
       clearInterval(this.time);
     }
-    let nextX = this.props.x + 1;
-    let nextY = this.props.y;
+    let nextX = store.getState().x + 1;
+    let nextY = store.getState().y;
     if (this.isCollision(nextX, nextY)) {
       this.setState({
         arr: this.state.arr.map((itemRow, indexRow) =>
           itemRow.map((item, index) =>
-            SHAPE_ARR[this.beforeType][this.collisionCount].some(([x, y]) => (x + this.props.x) === indexRow && (y + this.props.y) === index) ? 1 : item
+            SHAPE_ARR[this.beforeType][this.collisionCount].some(([x, y]) => (x + store.getState().x) === indexRow && (y + store.getState().y) === index) ? 1 : item
           )
         )
       });
@@ -175,9 +153,7 @@ class App extends React.Component {
     })
   }
   render() {
-    
     let {x,y} = store.getState();
-    console.log(store.getState());
     const BACK_COLOR = {
       0: "lightgrey",
       1: "red",
@@ -251,7 +227,6 @@ class App extends React.Component {
     );
   }
 };
-// const Tetris = connect(mapStateToProps, mapDispatchToProps)(App);
 ReactDOM.render(
   <Provider store={store}>
     <App />

@@ -4,7 +4,6 @@ export const boxInitialState = {
 };
 export default(state = boxInitialState, action)=> {
     const x = state.x;
-    const y = state.y;
     let {type,payload} = action
     switch (type) {
         case 'downinit':
