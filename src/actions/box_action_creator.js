@@ -1,20 +1,28 @@
-import store from '../store/index'
-const DIV_DOWN = 'DIV_DOWN';
 const INITKEYDOWN = 'INIT_KEY_DOWN';
-const DIVINIT = 'DIV_INIT';
+const CHANGE_COUNT = 'CHANGE_COUNT';
+const CHANGE_TYPE = 'CHANGE_TYPE';
+const CHANGE_BEFORETYPE = 'CHANGE_BEFORETYPE';
 
-const divDown = () =>({
-  type: 'down',
-});
+
 const initKeyDown = (x,y) =>({
   type: 'keycol',
   payload: { x, y },
 });
-const divInit = () =>({
-  type: 'downinit',
-});
+const changeCount = (collisionCount) => ({
+  type:'changeCount',
+  payload:{collisionCount}
+})
+const changeType = (type) => ({
+  type:'changetype',
+  payload:{type}
+})
+const changeBeforeType = (pretype) => ({
+  type:'changebeforetype',
+  payload:{pretype}
+})
 export default{
-  divDown,DIV_DOWN,
   initKeyDown,INITKEYDOWN,
-  divInit,DIVINIT
+  changeCount,CHANGE_COUNT,
+  changeBeforeType,CHANGE_BEFORETYPE,
+  changeType,CHANGE_TYPE,
 };

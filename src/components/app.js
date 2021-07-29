@@ -1,10 +1,7 @@
 import React from 'react';
-// import store from '../store/index';
-// import box_action_creator from '../actions/box_action_creator'
 import { Slider } from 'antd'
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
 import box_action_creator from '../actions/box_action_creator';
-
 const SHAPE_ARR = [
   [[[0, 1], [1, 1], [2, 1], [3, 1]], [[1, 0], [1, 1], [1, 2], [1, 3]]],//一
   [[[1, 0], [0, 1], [1, 1], [2, 1]], [[1, 0], [1, 1], [1, 2], [0, 1]], [[1, 2], [0, 1], [1, 1], [2, 1]], [[1, 0], [1, 1], [1, 2], [2, 1]]], // T
@@ -20,7 +17,6 @@ const SCORE_LIST = {
   3: 60,
   4: 100
 }
-
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -31,11 +27,8 @@ class App extends React.Component {
       squareArr: new Array(4).fill(new Array(4).fill(0)),
     };
   }
-  collisionCount = 0;
   spaceCount = 0;
   collision = false;
-  type = 0;
-  beforeType = 0;
   time = 0;
   previousClick = (e) => {
 
@@ -80,15 +73,13 @@ class App extends React.Component {
     }
   }
   componentDidMount() {
-    this.type = parseInt(Math.random() * SHAPE_ARR.length);
-    this.beforeType = parseInt(Math.random() * SHAPE_ARR.length);
     document.addEventListener('keydown', this.onKeyDown);
   }
   createShape() {
     this.setState({
       squareArr: this.state.squareArr.map((itemRow, indexRow) =>
         itemRow.map((val, index) =>
-          SHAPE_ARR[this.beforeType][0].some(([x, y]) => x === indexRow && y === index) ? 1 : 0
+          SHAPE_ARR[this.props.beforeType][0].some(([x, y]) => x === indexRow && y === index) ? 1 : 0
         )
       )
     })
@@ -105,7 +96,7 @@ class App extends React.Component {
       this.setState({
         arr: this.state.arr.map((itemRow, indexRow) =>
           itemRow.map((item, index) =>
-            SHAPE_ARR[this.beforeType][this.collisionCount].some(([x, y]) => (x + this.props.x) === indexRow && (y + this.props.y) === index) ? 1 : item
+            SHAPE_ARR[this.props.beforeType][this.props.collisionCount].some(([x, y]) => (x + this.props.x) === indexRow && (y + this.props.y) === index) ? 1 : item
           )
         )
       });
@@ -115,19 +106,19 @@ class App extends React.Component {
         this.setState({ score: this.state.score + SCORE_LIST[FULL_LENGTH] })
       }
       this.setState({ arr: new Array(FULL_LENGTH).fill(new Array(10).fill(0)).concat(FULL) });
-      this.props.divInit();
-      this.beforeType = this.type;
+      this.props.initKeyDown(-1, 3);
+      this.props.changeBeforeType(this.props.type);
       this.createShape();
-      this.type = parseInt(Math.random() * SHAPE_ARR.length)
+      this.props.changeType(parseInt(Math.random() * SHAPE_ARR.length));
       this.createNext();
-      this.collisionCount = 0;
+      this.props.changeCount(0);
     } else {
-      this.props.divDown();
+      this.props.initKeyDown(this.props.x + 1, this.props.y)
     }
   }
   isCollision(x, y) {
     let collision = false;
-    SHAPE_ARR[this.beforeType][this.collisionCount].forEach((value) => {
+    SHAPE_ARR[this.props.beforeType][this.props.collisionCount].forEach((value) => {
       let checkRow = x + value[0];
       let checkCol = y + value[1];
       if (checkCol < 0 || checkCol > 9 || checkRow > 19 || this.state.arr[checkRow][checkCol] === 1) {
@@ -137,14 +128,14 @@ class App extends React.Component {
     return collision;
   }
   isRevolve() {
-    this.collisionCount++;
-    if (this.collisionCount >= SHAPE_ARR[this.beforeType].length) {
-      this.collisionCount = 0;
+    this.props.changeCount(this.props.collisionCount + 1);
+    if (this.props.collisionCount >= SHAPE_ARR[this.props.beforeType].length) {
+      this.props.changeCount(0);
     }
     this.setState({
       squareArr: this.state.squareArr.map((itemRow, indexRow) =>
         itemRow.map((val, index) =>
-          SHAPE_ARR[this.beforeType][this.collisionCount].some(([x, y]) => x === indexRow && y === index) ? 1 : 0
+          SHAPE_ARR[this.props.beforeType][this.props.collisionCount].some(([x, y]) => x === indexRow && y === index) ? 1 : 0
         )
       )
     });
@@ -153,7 +144,7 @@ class App extends React.Component {
     this.setState({
       nextArr: this.state.nextArr.map((itemRow, indexRow) =>
         itemRow.map((val, index) =>
-          SHAPE_ARR[this.type][0].some(([x, y]) => x === indexRow && y === index) ? 1 : 0
+          SHAPE_ARR[this.props.type][0].some(([x, y]) => x === indexRow && y === index) ? 1 : 0
         )
       )
     })
@@ -180,7 +171,7 @@ class App extends React.Component {
     };
     return (
       <div className='app flex flex-column h-full' style={{ background: 'linear-gradient(-10deg, #000000, #ffffff)', position: "relative" }}>
-        <div style={{display:'flex',alignItems:'inherit'}}>
+        <div style={{ display: 'flex', alignItems: 'inherit' }}>
           <div style={{ width: "300px", height: " 600px", border: "1px solid white", position: "absolute", top: "0px", left: "0px", display: "grid", gridTemplateColumns: "repeat(10,30px)", gridTemplateRows: "repeat(20,30px)" }}>
             {
               this.state.arr.map((rowItem, rowIndex) =>
@@ -195,7 +186,7 @@ class App extends React.Component {
             }
           </div>
           <div style={style}>
-              <Slider vertical defaultValue={0} />
+            <Slider vertical defaultValue={0} />
           </div>
         </div>
         <div style={{ position: "absolute", top: x * 30 + 1, left: y * 30 + 1, display: "grid", gridTemplateColumns: "repeat(4,30px)", gridTemplateRows: "repeat(4,30px)" }}>
@@ -242,17 +233,23 @@ class App extends React.Component {
     );
   }
 };
-function mapStateToProps(state){
-  return{
-    x:state.box.x,
-    y:state.box.y,
+function mapStateToProps(state) {
+  return {
+    x: state.box.x,
+    y: state.box.y,
+    collisionCount:state.box.collisionCount,
+    type:state.box.type,
+    beforeType:state.box.beforeType,
   }
 }
-function mapDispatchToProps(dispatch){
-  return{
-    divDown:()=>dispatch(box_action_creator.divDown()),
-    divInit :()=>dispatch(box_action_creator.divInit()),
-    initKeyDown:(x,y)=>dispatch(box_action_creator.initKeyDown(x,y)),
+function mapDispatchToProps(dispatch) {
+  return {
+    divDown: () => dispatch(box_action_creator.divDown()),
+    divInit: () => dispatch(box_action_creator.divInit()),
+    initKeyDown: (x, y) => dispatch(box_action_creator.initKeyDown(x, y)),
+    changeCount:(collisionCount) => dispatch(box_action_creator.changeCount(collisionCount)),
+    changeType:(type) => dispatch(box_action_creator.changeType(type)),
+    changeBeforeType:(pretype) => dispatch(box_action_creator.changeBeforeType(pretype)),
   }
 }
-export default connect(mapStateToProps,mapDispatchToProps)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(App);
