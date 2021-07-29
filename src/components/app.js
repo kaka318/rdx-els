@@ -1,9 +1,9 @@
 import React from 'react';
 import store from '../store/index';
-import box_action_creator from '../actions/box_action_creator'
-import stateHistory from '../reducers/stateHistory'
+// import box_action_creator from '../actions/box_action_creator'
 import { Slider } from 'antd'
-
+import {connect} from 'react-redux'
+import box_action_creator from '../actions/box_action_creator';
 
 const SHAPE_ARR = [
   [[[0, 1], [1, 1], [2, 1], [3, 1]], [[1, 0], [1, 1], [1, 2], [1, 3]]],//一
@@ -21,7 +21,7 @@ const SCORE_LIST = {
   4: 100
 }
 
-export default class App extends React.Component {
+class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -44,7 +44,7 @@ export default class App extends React.Component {
 
   }
   onKeyDown = (e) => {
-    let { x, y } = store.getState();
+    let { x, y } = this.props;
     let curx = x;
     let cury = y;
     switch (e.keyCode) {
@@ -76,15 +76,10 @@ export default class App extends React.Component {
         break;
     }
     if (!this.isCollision(curx, cury)) {
-      box_action_creator.initKeyDown(curx, cury)
+      this.props.initKeyDown(curx, cury)
     }
   }
   componentDidMount() {
-    store.subscribe(() => {
-      this.setState({
-
-      })
-    })
     this.type = parseInt(Math.random() * SHAPE_ARR.length);
     this.beforeType = parseInt(Math.random() * SHAPE_ARR.length);
     document.addEventListener('keydown', this.onKeyDown);
@@ -120,14 +115,14 @@ export default class App extends React.Component {
         this.setState({ score: this.state.score + SCORE_LIST[FULL_LENGTH] })
       }
       this.setState({ arr: new Array(FULL_LENGTH).fill(new Array(10).fill(0)).concat(FULL) });
-      box_action_creator.initDown();
+      this.props.initDown();
       this.beforeType = this.type;
       this.createShape();
       this.type = parseInt(Math.random() * SHAPE_ARR.length)
       this.createNext();
       this.collisionCount = 0;
     } else {
-      box_action_creator.divDown();
+      this.props.divDown();
     }
   }
   isCollision(x, y) {
@@ -164,7 +159,8 @@ export default class App extends React.Component {
     })
   }
   render() {
-    let { x, y } = store.getState();
+    let { x, y } = this.props;
+    // console.log(x,y)
     const BACK_COLOR = {
       0: "lightgrey",
       1: "red",
@@ -246,3 +242,17 @@ export default class App extends React.Component {
     );
   }
 };
+function mapStateToProps(state){
+  return{
+    x:state.box.x,
+    y:state.box.y,
+  }
+}
+function mapDispatchToProps(dispatch){
+  return{
+    divDown:()=>dispatch(box_action_creator.divDown()),
+    divInit :()=>dispatch(box_action_creator.divInit()),
+    initKeyDown:()=>dispatch(box_action_creator.initKeyDown()),
+  }
+}
+export default connect(mapStateToProps,mapDispatchToProps)(App);
