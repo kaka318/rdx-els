@@ -6,10 +6,12 @@ import { Provider } from 'react-redux';
 import App from './components/app';
 import 'antd/dist/antd.min.css';
 import { reducers, boxInitialState } from './reducers/index';
+// import {InitialState} from './reducers/timetravel_reducer';
 // import Game from './components/game';
 const store = createStore(
   reducers,
-  boxInitialState
+  boxInitialState,
+  // InitialState,
 );
 ReactDOM.render((
   <Provider store={store}>

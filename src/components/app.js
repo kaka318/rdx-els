@@ -30,6 +30,7 @@ class App extends React.Component {
   spaceCount = 0;
   collision = false;
   time = 0;
+  timeline = [];
   previousClick = (e) => {
 
   }
@@ -57,7 +58,8 @@ class App extends React.Component {
         if (this.spaceCount === 0) {
           this.createShape();
           this.createNext();
-          this.time = setInterval(() => this.shapeDivDown(), 500);
+          
+          this.time = setInterval(() => this.shapeDivDown(), 100);
           this.spaceCount++;
         }
         else {
@@ -85,11 +87,6 @@ class App extends React.Component {
     })
   }
   shapeDivDown() {
-    const GAME_OVER = this.state.arr[0].some((val) => val === 1);
-    if (GAME_OVER) {
-      alert("game over 得分为" + this.state.score);
-      clearInterval(this.time);
-    }
     let nextX = this.props.x + 1;
     let nextY = this.props.y;
     if (this.isCollision(nextX, nextY)) {
@@ -107,6 +104,8 @@ class App extends React.Component {
       }
       this.setState({ arr: new Array(FULL_LENGTH).fill(new Array(10).fill(0)).concat(FULL) });
       this.props.initKeyDown(-1, 3);
+      this.timeline.push(this.props.beforeType);
+      console.log(this.timeline);
       this.props.changeBeforeType(this.props.type);
       this.createShape();
       this.props.changeType(parseInt(Math.random() * SHAPE_ARR.length));
@@ -114,6 +113,11 @@ class App extends React.Component {
       this.props.changeCount(0);
     } else {
       this.props.initKeyDown(this.props.x + 1, this.props.y)
+    }
+    const GAME_OVER = this.state.arr[0].some((val) => val === 1);
+    if (GAME_OVER) {
+      alert("game over 得分为" + this.state.score);
+      clearInterval(this.time);
     }
   }
   isCollision(x, y) {
@@ -186,7 +190,7 @@ class App extends React.Component {
             }
           </div>
           <div style={style}>
-            <Slider vertical defaultValue={0} />
+          <Slider vertical defaultValue={0} step={10}/>
           </div>
         </div>
         <div style={{ position: "absolute", top: x * 30 + 1, left: y * 30 + 1, display: "grid", gridTemplateColumns: "repeat(4,30px)", gridTemplateRows: "repeat(4,30px)" }}>

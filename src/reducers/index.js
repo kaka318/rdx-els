@@ -1,5 +1,6 @@
 import { combineReducers } from "redux";
-import boxReducer from './boxDown_reducer'
+import boxReducer from './boxDown_reducer';
+import timeRedecer from './timetravel_reducer'
 export const boxInitialState = {
     x: -1,
     y: 3,
@@ -9,4 +10,11 @@ export const boxInitialState = {
 };
 export const reducers = combineReducers({
     box:boxReducer,
+    time:timeRedecer,
 })
+
+// export default reducers(
+//     combineReducers({
+//         box:boxReducer
+//     })
+// )
