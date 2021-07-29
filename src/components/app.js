@@ -1,5 +1,5 @@
 import React from 'react';
-import store from '../store/index';
+// import store from '../store/index';
 // import box_action_creator from '../actions/box_action_creator'
 import { Slider } from 'antd'
 import {connect} from 'react-redux'
@@ -99,13 +99,13 @@ class App extends React.Component {
       alert("game over 得分为" + this.state.score);
       clearInterval(this.time);
     }
-    let nextX = store.getState().x + 1;
-    let nextY = store.getState().y;
+    let nextX = this.props.x + 1;
+    let nextY = this.props.y;
     if (this.isCollision(nextX, nextY)) {
       this.setState({
         arr: this.state.arr.map((itemRow, indexRow) =>
           itemRow.map((item, index) =>
-            SHAPE_ARR[this.beforeType][this.collisionCount].some(([x, y]) => (x + store.getState().x) === indexRow && (y + store.getState().y) === index) ? 1 : item
+            SHAPE_ARR[this.beforeType][this.collisionCount].some(([x, y]) => (x + this.props.x) === indexRow && (y + this.props.y) === index) ? 1 : item
           )
         )
       });
@@ -115,7 +115,7 @@ class App extends React.Component {
         this.setState({ score: this.state.score + SCORE_LIST[FULL_LENGTH] })
       }
       this.setState({ arr: new Array(FULL_LENGTH).fill(new Array(10).fill(0)).concat(FULL) });
-      this.props.initDown();
+      this.props.divInit();
       this.beforeType = this.type;
       this.createShape();
       this.type = parseInt(Math.random() * SHAPE_ARR.length)
@@ -252,7 +252,7 @@ function mapDispatchToProps(dispatch){
   return{
     divDown:()=>dispatch(box_action_creator.divDown()),
     divInit :()=>dispatch(box_action_creator.divInit()),
-    initKeyDown:()=>dispatch(box_action_creator.initKeyDown()),
+    initKeyDown:(x,y)=>dispatch(box_action_creator.initKeyDown(x,y)),
   }
 }
 export default connect(mapStateToProps,mapDispatchToProps)(App);
