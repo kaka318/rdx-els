@@ -1,29 +1,20 @@
 import store from '../store/index'
-export default {
-  divDown(){
-    let action = {
-      type: 'down',
-    }
-    store.dispatch(action)
-  },
-  initDown(){
-    let action = {
-      type: 'downinit',
-    }
-    store.dispatch(action)
-  },
-  initKeyDown(x, y){
-    let action = {
-      type: 'keycol',
-      payload: { x, y },
-    }
-    store.dispatch(action)
-  },
-  eButton(x,y){
-    let action = {
-      type : 'ebutton',
-      payload:{x,y}
-    }
-    store.dispatch(action)
-  }
-}
+const DIV_DOWN = 'DIV_DOWN';
+const INITKEYDOWN = 'INIT_KEY_DOWN';
+const DIVINIT = 'DIV_INIT';
+
+const divDown = () =>({
+  type: 'down',
+});
+const initKeyDown = (x,y) =>({
+  type: 'keycol',
+  payload: { x, y },
+});
+const divInit = () =>({
+  type: 'downinit',
+});
+export default{
+  divDown,DIV_DOWN,
+  initKeyDown,INITKEYDOWN,
+  divInit,DIVINIT
+};

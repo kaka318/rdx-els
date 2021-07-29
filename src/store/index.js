@@ -1,5 +1,5 @@
 import {createStore} from 'redux'
-import boxReducer from '../reducers/boxDown_reducer'
+import {reducers} from '../reducers/index'
 import stateHistory from '../reducers/stateHistory'
-let store = createStore(boxReducer)
+let store = createStore(reducers);
 export default store

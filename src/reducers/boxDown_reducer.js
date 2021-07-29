@@ -1,8 +1,5 @@
 import stateHistory from './stateHistory'
-export const boxInitialState = {
-    x: -1,
-    y: 3,
-};
+import {boxInitialState} from './index'
 // export default 
 export default function(state = boxInitialState, action){
     const x = state.x;
