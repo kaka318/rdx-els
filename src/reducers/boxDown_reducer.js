@@ -1,8 +1,10 @@
+import stateHistory from './stateHistory'
 export const boxInitialState = {
     x: -1,
     y: 3,
 };
-export default(state = boxInitialState, action)=> {
+// export default 
+export default function(state = boxInitialState, action){
     const x = state.x;
     let {type,payload} = action
     switch (type) {
@@ -13,6 +15,6 @@ export default(state = boxInitialState, action)=> {
         case 'keycol':
             return {x:payload.x,y:payload.y};
         default:
-            return state
+            return state;
     }
 }
