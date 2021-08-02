@@ -40,36 +40,34 @@ class App extends React.Component {
   timetypeline = [];
   isreverse = false;
   previousClick = (e) => {
-    // this.isreverse = false;
     clearInterval(this.time);
     if (this.index > 0) {
       this.index--;
       this.props.onrecord(Number(this.timeline.slice(0, this.index + 1).slice(this.index, this.index + 1)));
       this.props.onrecordtop(Number(this.timetypeline.slice(0, this.index + 1).slice(this.index, this.index + 1)), this.timearrline.slice(0, this.index + 1).slice(this.index, this.index + 1)[0]);
-      // this.props.changeType(this.props.timeNextType);
-      // this.props.changeBeforeType(this.props.timeType);
       this.setState({ arr: this.props.timeArr });
       this.createShape(this.props.timeType);
       this.createNext(this.props.timeNextType);
     }
-    console.log(this.index)
-    console.log(this.isreverse)
-
+    else{
+      this.isreverse = true;
+      this.nextClick();
+    }
   }
   nextClick = (e) => {
-    // this.isreverse = true;
-    clearInterval(this.time);
     if (this.index < this.timeline.length) {
       this.index++;
       this.props.onrecord(Number(this.timeline.slice(this.index, this.timeline.length).slice(0, 1)));
       this.props.onrecordtop(Number(this.timetypeline.slice(this.index, this.timeline.length).slice(0, 1)), this.timearrline.slice(this.index, this.timeline.length).slice(0, 1)[0]);
-      // this.props.changeType(this.props.timeNextType);
-      // this.props.changeBeforeType(this.props.timeType);
       this.setState({ arr: this.props.timeArr });
       this.createShape(this.props.timeType);
       this.createNext(this.props.timeNextType);
     }
-    console.log(this.index)
+    else{
+      this.isreverse = false;
+      this.previousClick();
+      this.setState({ arr: this.storagearr});
+      }
   }
   onKeyDown = (e) => {
     let { x, y } = this.props;
@@ -110,8 +108,8 @@ class App extends React.Component {
   }
   componentDidMount() {
     this.storagearr = this.state.arr;
-    this.props.onrecordtop(this.props.timeType, this.state.arr);
-    this.props.onrecord(this.props.timeNextType);
+    this.props.onrecordtop(this.props.beforeType, this.state.arr);
+    this.props.onrecord(this.props.type);
     console.log(box_selector.composeresult)
     document.addEventListener('keydown', this.onKeyDown);
   }
@@ -141,7 +139,6 @@ class App extends React.Component {
       this.timetypeline.push(this.props.beforeType);
       this.index = this.timeline.length;
       this.storagearr = this.state.arr;
-
       const FULL = this.state.arr.filter((val) => !val.every((value) => value === 1));
       const FULL_LENGTH = 20 - FULL.length;
       if (FULL_LENGTH > 0) {
@@ -220,12 +217,6 @@ class App extends React.Component {
       height: 595,
       marginLeft: 290,
     };
-
-    const style1 = {
-      display: 'inline-block',
-      height: 595,
-      marginLeft: 0,
-    };
     return (
       <div className='app flex flex-column h-full' style={{ background: 'linear-gradient(-10deg, #000000, #ffffff)', position: "relative" }}>
         <div style={{ display: 'flex', alignItems: 'inherit' }}>
@@ -243,11 +234,7 @@ class App extends React.Component {
             }
           </div>
           <div style={style}>
-            {/* <Slider vertical defaultValue={0} step={1} max={this.timeline.length} onChange={this.isreverse?this.nextClick:this.previousClick} reverse={this.isreverse}/> */}
-            <Slider vertical defaultValue={0} step={1} max={this.timeline.length} onChange={this.previousClick} reverse={false} />
-          </div>
-          <div style={style1}>
-            <Slider vertical defaultValue={0} step={1} max={this.timeline.length} onChange={this.nextClick} reverse={true} />
+            <Slider vertical defaultValue={0} step={1} max={this.timeline.length} onChange={this.isreverse?this.nextClick:this.previousClick} reverse={this.isreverse}/>
           </div>
         </div>
         <div style={{ position: "absolute", top: x * 30 + 1, left: y * 30 + 1, display: "grid", gridTemplateColumns: "repeat(4,30px)", gridTemplateRows: "repeat(4,30px)" }}>
