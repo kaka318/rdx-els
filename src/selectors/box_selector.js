@@ -10,7 +10,7 @@ function next(type,arr){
 }
 let result = compose(previous,next);
 export default {
-  composeresult: result(1),
+  composeresult: result(),
   // getUsername: state => state.user.std.username,
   // getRoleId: state => state.user.std.roleId,
   // hasAccess: state => state.user.std.access,

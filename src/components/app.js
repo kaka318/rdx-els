@@ -45,15 +45,15 @@ class App extends React.Component {
       this.index--;
       this.props.onrecord(Number(this.timeline.slice(0, this.index + 1).slice(this.index, this.index + 1)));
       this.props.onrecordtop(Number(this.timetypeline.slice(0, this.index + 1).slice(this.index, this.index + 1)), this.timearrline.slice(0, this.index + 1).slice(this.index, this.index + 1)[0]);
-      this.setState({ arr: this.props.timeArr });
+      this.setState({ arr : this.props.timeArr });
       this.createShape(this.props.timeType);
       this.createNext(this.props.timeNextType);
-      console.log(this.timearrline.slice(0, this.index + 1).slice(this.index, this.index + 1)[0])
-      console.log(this.props.timeArr)
+      console.log(this.index)
     }
     else {
       this.isreverse = true;
       this.nextClick();
+      return;
     }
   }
   nextClick = () => {
@@ -61,27 +61,23 @@ class App extends React.Component {
       this.index++;
       this.props.onrecord(Number(this.timeline.slice(this.index, this.timeline.length).slice(0, 1)));
       this.props.onrecordtop(Number(this.timetypeline.slice(this.index, this.timeline.length).slice(0, 1)), this.timearrline.slice(this.index, this.timeline.length).slice(0, 1)[0]);
-      this.setState({ arr: this.props.timeArr });
+      this.setState({ arr : this.props.timeArr });
       this.createShape(this.props.timeType);
       this.createNext(this.props.timeNextType);
+      console.log(this.index)
     }
     else {
       this.isreverse = false;
       this.previousClick();
       this.setState({ arr: this.storagearr });
+      return;
     }
   }
   reStart = () => {
     this.setState({ arr: this.props.timeArr });
     this.createShape(this.props.beforeType);
     this.createNext(this.props.type);
-    this.time = setInterval(() => this.shapeDivDown(), 100);
-    this.spaceCount++;
-    this.timeline = [];
-    this.index = 0;
-    this.timearrline = [];
-    this.timetypeline = [];
-    this.isreverse = false;
+    this.time = setInterval(() => this.shapeDivDown(), 500);
   }
   onKeyDown = (e) => {
     let { x, y } = this.props;
@@ -104,7 +100,7 @@ class App extends React.Component {
         if (this.spaceCount === 0) {
           this.createShape(this.props.beforeType);
           this.createNext(this.props.type);
-          this.time = setInterval(() => this.shapeDivDown(), 100);
+          this.time = setInterval(() => this.shapeDivDown(), 500);
           this.spaceCount++;
           this.setState({ arr: this.storagearr });
         }
@@ -245,7 +241,7 @@ class App extends React.Component {
             }
           </div>
           <div style={style}>
-            <Slider vertical defaultValue={0} step={1} max={this.timeline.length} onChange={this.isreverse ? this.nextClick : this.previousClick} reverse={this.isreverse} />
+            <Slider className = 'Slider' vertical defaultValue={0} step={1} max={this.timeline.length} onChange={ this.isreverse ? this.nextClick : this.previousClick} reverse={this.isreverse}/>
           </div>
         </div>
         <div style={{ position: "absolute", top: x * 30 + 1, left: y * 30 + 1, display: "grid", gridTemplateColumns: "repeat(4,30px)", gridTemplateRows: "repeat(4,30px)" }}>

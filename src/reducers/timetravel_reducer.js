@@ -1,7 +1,7 @@
 import {boxInitialState}  from './index'
 export const InitState = {
   timeNextType:0,
-  timeArr:[],
+  timeArr:null,
   timeType:0,
 }
 export default function(state = InitState,action){
