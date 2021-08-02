@@ -39,7 +39,7 @@ class App extends React.Component {
   timearrline = [];
   timetypeline = [];
   isreverse = false;
-  previousClick = (e) => {
+  previousClick = () => {
     clearInterval(this.time);
     if (this.index > 0) {
       this.index--;
@@ -48,13 +48,15 @@ class App extends React.Component {
       this.setState({ arr: this.props.timeArr });
       this.createShape(this.props.timeType);
       this.createNext(this.props.timeNextType);
+      console.log(this.timearrline.slice(0, this.index + 1).slice(this.index, this.index + 1)[0])
+      console.log(this.props.timeArr)
     }
-    else{
+    else {
       this.isreverse = true;
       this.nextClick();
     }
   }
-  nextClick = (e) => {
+  nextClick = () => {
     if (this.index < this.timeline.length) {
       this.index++;
       this.props.onrecord(Number(this.timeline.slice(this.index, this.timeline.length).slice(0, 1)));
@@ -63,11 +65,23 @@ class App extends React.Component {
       this.createShape(this.props.timeType);
       this.createNext(this.props.timeNextType);
     }
-    else{
+    else {
       this.isreverse = false;
       this.previousClick();
-      this.setState({ arr: this.storagearr});
-      }
+      this.setState({ arr: this.storagearr });
+    }
+  }
+  reStart = () => {
+    this.setState({ arr: this.props.timeArr });
+    this.createShape(this.props.beforeType);
+    this.createNext(this.props.type);
+    this.time = setInterval(() => this.shapeDivDown(), 100);
+    this.spaceCount++;
+    this.timeline = [];
+    this.index = 0;
+    this.timearrline = [];
+    this.timetypeline = [];
+    this.isreverse = false;
   }
   onKeyDown = (e) => {
     let { x, y } = this.props;
@@ -138,7 +152,7 @@ class App extends React.Component {
       this.timeline.push(this.props.type);
       this.timearrline.push(this.state.arr);
       this.timetypeline.push(this.props.beforeType);
-      this.index = this.timeline.length;
+      this.index = this.timeline.length - 1;
       this.storagearr = this.state.arr;
       const FULL = this.state.arr.filter((val) => !val.every((value) => value === 1));
       const FULL_LENGTH = 20 - FULL.length;
@@ -151,10 +165,6 @@ class App extends React.Component {
       this.createShape(this.props.beforeType);
       this.props.changeType(parseInt(Math.random() * SHAPE_ARR.length));
       this.createNext(this.props.type);
-
-
-
-
       this.props.changeCount(0);
     } else {
       this.props.initKeyDown(this.props.x + 1, this.props.y)
@@ -235,7 +245,7 @@ class App extends React.Component {
             }
           </div>
           <div style={style}>
-            <Slider vertical defaultValue={0} step={1} max={this.timeline.length} onChange={this.isreverse?this.nextClick:this.previousClick} reverse={this.isreverse}/>
+            <Slider vertical defaultValue={0} step={1} max={this.timeline.length} onChange={this.isreverse ? this.nextClick : this.previousClick} reverse={this.isreverse} />
           </div>
         </div>
         <div style={{ position: "absolute", top: x * 30 + 1, left: y * 30 + 1, display: "grid", gridTemplateColumns: "repeat(4,30px)", gridTemplateRows: "repeat(4,30px)" }}>
@@ -275,6 +285,7 @@ class App extends React.Component {
               <button style={{ background: 'red', width: '30px', height: '20px', border: '1px solid white', textAlign: 'center' }} onClick={this.previousClick}>{'<—'}</button>
               <button style={{ background: 'red', width: '30px', height: '20px', border: '1px solid white', textAlign: 'center' }} onClick={this.nextClick}>{'—>'}</button>
             </div>
+            <button style={{ background: 'red', width: '100px', height: '20px', border: '1px solid white', textAlign: 'center' }} onClick={this.reStart}>restart in here</button>
           </div>
         </div>
       </div>
