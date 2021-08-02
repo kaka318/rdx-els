@@ -1,7 +1,10 @@
 import React from 'react';
 import { Slider } from 'antd'
 import { connect } from 'react-redux'
+import { compose } from 'redux';
 import box_action_creator from '../actions/box_action_creator';
+import time_action from '../actions/time_action';
+import box_selector from '../selectors/box_selector';
 const SHAPE_ARR = [
   [[[0, 1], [1, 1], [2, 1], [3, 1]], [[1, 0], [1, 1], [1, 2], [1, 3]]],//一
   [[[1, 0], [0, 1], [1, 1], [2, 1]], [[1, 0], [1, 1], [1, 2], [0, 1]], [[1, 2], [0, 1], [1, 1], [2, 1]], [[1, 0], [1, 1], [1, 2], [2, 1]]], // T
@@ -27,15 +30,46 @@ class App extends React.Component {
       squareArr: new Array(4).fill(new Array(4).fill(0)),
     };
   }
+  storagearr = [];
   spaceCount = 0;
   collision = false;
   time = 0;
   timeline = [];
+  index = 0;
+  timearrline = [];
+  timetypeline = [];
+  isreverse = false;
   previousClick = (e) => {
+    // this.isreverse = false;
+    clearInterval(this.time);
+    if (this.index > 0) {
+      this.index--;
+      this.props.onrecord(Number(this.timeline.slice(0, this.index + 1).slice(this.index, this.index + 1)));
+      this.props.onrecordtop(Number(this.timetypeline.slice(0, this.index + 1).slice(this.index, this.index + 1)), this.timearrline.slice(0, this.index + 1).slice(this.index, this.index + 1)[0]);
+      // this.props.changeType(this.props.timeNextType);
+      // this.props.changeBeforeType(this.props.timeType);
+      this.setState({ arr: this.props.timeArr });
+      this.createShape(this.props.timeType);
+      this.createNext(this.props.timeNextType);
+    }
+    console.log(this.index)
+    console.log(this.isreverse)
 
   }
   nextClick = (e) => {
-
+    // this.isreverse = true;
+    clearInterval(this.time);
+    if (this.index < this.timeline.length) {
+      this.index++;
+      this.props.onrecord(Number(this.timeline.slice(this.index, this.timeline.length).slice(0, 1)));
+      this.props.onrecordtop(Number(this.timetypeline.slice(this.index, this.timeline.length).slice(0, 1)), this.timearrline.slice(this.index, this.timeline.length).slice(0, 1)[0]);
+      // this.props.changeType(this.props.timeNextType);
+      // this.props.changeBeforeType(this.props.timeType);
+      this.setState({ arr: this.props.timeArr });
+      this.createShape(this.props.timeType);
+      this.createNext(this.props.timeNextType);
+    }
+    console.log(this.index)
   }
   onKeyDown = (e) => {
     let { x, y } = this.props;
@@ -56,11 +90,11 @@ class App extends React.Component {
         break;
       case 32:
         if (this.spaceCount === 0) {
-          this.createShape();
-          this.createNext();
-          
+          this.createShape(this.props.beforeType);
+          this.createNext(this.props.type);
           this.time = setInterval(() => this.shapeDivDown(), 100);
           this.spaceCount++;
+          this.setState({ arr: this.storagearr });
         }
         else {
           this.spaceCount = 0;
@@ -75,13 +109,17 @@ class App extends React.Component {
     }
   }
   componentDidMount() {
+    this.storagearr = this.state.arr;
+    this.props.onrecordtop(this.props.timeType, this.state.arr);
+    this.props.onrecord(this.props.timeNextType);
+    console.log(box_selector.composeresult)
     document.addEventListener('keydown', this.onKeyDown);
   }
-  createShape() {
+  createShape(beforeType) {
     this.setState({
       squareArr: this.state.squareArr.map((itemRow, indexRow) =>
         itemRow.map((val, index) =>
-          SHAPE_ARR[this.props.beforeType][0].some(([x, y]) => x === indexRow && y === index) ? 1 : 0
+          SHAPE_ARR[beforeType][0].some(([x, y]) => x === indexRow && y === index) ? 1 : 0
         )
       )
     })
@@ -97,6 +135,13 @@ class App extends React.Component {
           )
         )
       });
+
+      this.timeline.push(this.props.type);
+      this.timearrline.push(this.state.arr);
+      this.timetypeline.push(this.props.beforeType);
+      this.index = this.timeline.length;
+      this.storagearr = this.state.arr;
+
       const FULL = this.state.arr.filter((val) => !val.every((value) => value === 1));
       const FULL_LENGTH = 20 - FULL.length;
       if (FULL_LENGTH > 0) {
@@ -104,12 +149,14 @@ class App extends React.Component {
       }
       this.setState({ arr: new Array(FULL_LENGTH).fill(new Array(10).fill(0)).concat(FULL) });
       this.props.initKeyDown(-1, 3);
-      this.timeline.push(this.props.beforeType);
-      console.log(this.timeline);
       this.props.changeBeforeType(this.props.type);
-      this.createShape();
+      this.createShape(this.props.beforeType);
       this.props.changeType(parseInt(Math.random() * SHAPE_ARR.length));
-      this.createNext();
+      this.createNext(this.props.type);
+
+
+
+
       this.props.changeCount(0);
     } else {
       this.props.initKeyDown(this.props.x + 1, this.props.y)
@@ -144,11 +191,11 @@ class App extends React.Component {
       )
     });
   }
-  createNext() {
+  createNext(type) {
     this.setState({
       nextArr: this.state.nextArr.map((itemRow, indexRow) =>
         itemRow.map((val, index) =>
-          SHAPE_ARR[this.props.type][0].some(([x, y]) => x === indexRow && y === index) ? 1 : 0
+          SHAPE_ARR[type][0].some(([x, y]) => x === indexRow && y === index) ? 1 : 0
         )
       )
     })
@@ -173,6 +220,12 @@ class App extends React.Component {
       height: 595,
       marginLeft: 290,
     };
+
+    const style1 = {
+      display: 'inline-block',
+      height: 595,
+      marginLeft: 0,
+    };
     return (
       <div className='app flex flex-column h-full' style={{ background: 'linear-gradient(-10deg, #000000, #ffffff)', position: "relative" }}>
         <div style={{ display: 'flex', alignItems: 'inherit' }}>
@@ -190,7 +243,11 @@ class App extends React.Component {
             }
           </div>
           <div style={style}>
-          <Slider vertical defaultValue={0} step={10}/>
+            {/* <Slider vertical defaultValue={0} step={1} max={this.timeline.length} onChange={this.isreverse?this.nextClick:this.previousClick} reverse={this.isreverse}/> */}
+            <Slider vertical defaultValue={0} step={1} max={this.timeline.length} onChange={this.previousClick} reverse={false} />
+          </div>
+          <div style={style1}>
+            <Slider vertical defaultValue={0} step={1} max={this.timeline.length} onChange={this.nextClick} reverse={true} />
           </div>
         </div>
         <div style={{ position: "absolute", top: x * 30 + 1, left: y * 30 + 1, display: "grid", gridTemplateColumns: "repeat(4,30px)", gridTemplateRows: "repeat(4,30px)" }}>
@@ -226,7 +283,6 @@ class App extends React.Component {
               </div>
             </div>
             <span>得分：<span id="score" style={{ color: "red" }}>{this.state.score}</span> </span>
-            {/* <span>游戏规则：<br /> W变形 A 左移 S 加速 D 右移</span> */}
             <div>时间旅行
               <button style={{ background: 'red', width: '30px', height: '20px', border: '1px solid white', textAlign: 'center' }} onClick={this.previousClick}>{'<—'}</button>
               <button style={{ background: 'red', width: '30px', height: '20px', border: '1px solid white', textAlign: 'center' }} onClick={this.nextClick}>{'—>'}</button>
@@ -241,9 +297,12 @@ function mapStateToProps(state) {
   return {
     x: state.box.x,
     y: state.box.y,
-    collisionCount:state.box.collisionCount,
-    type:state.box.type,
-    beforeType:state.box.beforeType,
+    collisionCount: state.box.collisionCount,
+    type: state.box.type,
+    beforeType: state.box.beforeType,
+    timeNextType: state.time.timeNextType,
+    timeType: state.time.timeType,
+    timeArr: state.time.timeArr,
   }
 }
 function mapDispatchToProps(dispatch) {
@@ -251,9 +310,11 @@ function mapDispatchToProps(dispatch) {
     divDown: () => dispatch(box_action_creator.divDown()),
     divInit: () => dispatch(box_action_creator.divInit()),
     initKeyDown: (x, y) => dispatch(box_action_creator.initKeyDown(x, y)),
-    changeCount:(collisionCount) => dispatch(box_action_creator.changeCount(collisionCount)),
-    changeType:(type) => dispatch(box_action_creator.changeType(type)),
-    changeBeforeType:(pretype) => dispatch(box_action_creator.changeBeforeType(pretype)),
+    changeCount: (collisionCount) => dispatch(box_action_creator.changeCount(collisionCount)),
+    changeType: (type) => dispatch(box_action_creator.changeType(type)),
+    changeBeforeType: (pretype) => dispatch(box_action_creator.changeBeforeType(pretype)),
+    onrecord: (timeNextType) => dispatch(time_action.record(timeNextType)),
+    onrecordtop: (timeType, timeArr) => dispatch(time_action.recordtop(timeType, timeArr)),
   }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(App);

@@ -2,7 +2,7 @@ const INITKEYDOWN = 'INIT_KEY_DOWN';
 const CHANGE_COUNT = 'CHANGE_COUNT';
 const CHANGE_TYPE = 'CHANGE_TYPE';
 const CHANGE_BEFORETYPE = 'CHANGE_BEFORETYPE';
-const RECORD = 'RECORD';
+// const RECORD = 'RECORD';
 
 
 const initKeyDown = (x,y) =>({
@@ -21,10 +21,7 @@ const changeBeforeType = (pretype) => ({
   type:'changebeforetype',
   payload:{pretype}
 })
-const record = (beforeType) => ({
-  type:'record',
-  payload:{beforeType}
-})
+
 // const redo = () => ({
 //   type:'previous'
 // })
@@ -40,5 +37,5 @@ export default{
   changeCount,CHANGE_COUNT,
   changeBeforeType,CHANGE_BEFORETYPE,
   changeType,CHANGE_TYPE,
-  record,RECORD,
+  // record,RECORD,
 };

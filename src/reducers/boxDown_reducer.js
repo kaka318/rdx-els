@@ -1,4 +1,3 @@
-import stateHistory from './stateHistory'
 import {boxInitialState} from './index'
 // export default 
 export default function(state = boxInitialState, action){

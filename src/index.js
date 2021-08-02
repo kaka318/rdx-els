@@ -10,7 +10,6 @@ import { reducers, boxInitialState } from './reducers/index';
 // import Game from './components/game';
 const store = createStore(
   reducers,
-  boxInitialState,
   // InitialState,
 );
 ReactDOM.render((

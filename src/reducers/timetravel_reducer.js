@@ -1,31 +1,16 @@
-// import stateHistory from './stateHistory'
-// import {boxInitialState}  from './boxDown_reducer'
-// import {reducers} from './index'
-// export default (state = boxInitialState,action) => {
-//   switch(action.type){
-//     case 'previous':
-//       stateHistory.undo();
-//       break;
-//     case 'present':
-//       stateHistory.redo();
-//       break;
-//     case 'next':
-//       stateHistory.gotoState(action.stateIndex);
-//       break;
-//     default:
-//       const newState = reducers(state,action);
-//       stateHistory.push(newState);
-//   }
-//   return stateHistory.present;
-// }
-// import stateHistory from './stateHistory'
 import {boxInitialState}  from './index'
-// import {reducers} from './index'
-export default function(state = boxInitialState,action){
+export const InitState = {
+  timeNextType:0,
+  timeArr:[],
+  timeType:0,
+}
+export default function(state = InitState,action){
   let {type,payload} = action;
   switch(type){
     case 'record':
-      return {...state,beforeType:payload.beforeType};
+      return {...state,timeNextType:payload.timeNextType};
+    case 'recordtop':
+      return {...state,timeType:payload.timeType,timeArr:payload.timeArr};
     default:
       return state;
   }
