@@ -110,6 +110,7 @@ class App extends React.Component {
     this.storagearr = this.state.arr;
     this.props.onrecordtop(this.props.beforeType, this.state.arr);
     this.props.onrecord(this.props.type);
+    this.timearrline.push(this.state.arr)
     console.log(box_selector.composeresult)
     document.addEventListener('keydown', this.onKeyDown);
   }
