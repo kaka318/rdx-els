@@ -1,14 +1,14 @@
 const RECORD = 'RECORD';
 const RECORDTOP = 'RECORDTOP';
-const record = (timeNextType) => ({
+const record = (timeType,timeNextType,timeArr) => ({
   type:'record',
-  payload:{timeNextType},
+  payload:{timeType,timeNextType,timeArr},
 })
-const recordtop = (timeType,timeArr) => ({
-    type:'recordtop',
-    payload:{timeType,timeArr}
-})
+// const recordtop = (timeType,timeNextType,timeArr) => ({
+//     type:'recordtop',
+//     payload:{timeType},
+// })
 export default{
     record,RECORD,
-    recordtop,RECORDTOP,
+    // recordtop,RECORDTOP,
   };

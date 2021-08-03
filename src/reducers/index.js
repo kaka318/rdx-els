@@ -7,6 +7,7 @@ export const boxInitialState = {
     type:parseInt(Math.random() * 7),
     beforeType:parseInt(Math.random() * 7),
     collisionCount:0,
+    arr:new Array(20).fill(new Array(10).fill(0)),
 };
 export const reducers = combineReducers({
     box:boxReducer,

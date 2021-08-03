@@ -5,7 +5,8 @@ import { compose } from 'redux';
 import box_action_creator from '../actions/box_action_creator';
 import time_action from '../actions/time_action';
 import box_selector from '../selectors/box_selector';
-const SHAPE_ARR = [
+import { InitState } from '../reducers/timetravel_reducer'
+export const SHAPE_ARR = [
   [[[0, 1], [1, 1], [2, 1], [3, 1]], [[1, 0], [1, 1], [1, 2], [1, 3]]],//一
   [[[1, 0], [0, 1], [1, 1], [2, 1]], [[1, 0], [1, 1], [1, 2], [0, 1]], [[1, 2], [0, 1], [1, 1], [2, 1]], [[1, 0], [1, 1], [1, 2], [2, 1]]], // T
   [[[0, 0], [0, 1], [1, 1], [2, 1]], [[0, 2], [1, 0], [1, 1], [1, 2]], [[0, 1], [1, 1], [2, 1], [2, 2]], [[1, 0], [1, 1], [1, 2], [2, 0]]], //L
@@ -26,7 +27,7 @@ class App extends React.Component {
     this.state = {
       score: 0,
       nextArr: new Array(4).fill(new Array(4).fill(0)),
-      arr: new Array(20).fill(new Array(10).fill(0)),
+      // arr: new Array(20).fill(new Array(10).fill(0)),
       squareArr: new Array(4).fill(new Array(4).fill(0)),
     };
   }
@@ -39,46 +40,46 @@ class App extends React.Component {
   timearrline = [];
   timetypeline = [];
   isreverse = false;
-  previousClick = () => {
-    clearInterval(this.time);
-    if (this.index > 0) {
-      this.index--;
-      this.props.onrecord(Number(this.timeline.slice(0, this.index + 1).slice(this.index, this.index + 1)));
-      this.props.onrecordtop(Number(this.timetypeline.slice(0, this.index + 1).slice(this.index, this.index + 1)), this.timearrline.slice(0, this.index + 1).slice(this.index, this.index + 1)[0]);
-      this.setState({ arr : this.props.timeArr });
-      this.createShape(this.props.timeType);
-      this.createNext(this.props.timeNextType);
-      console.log(this.index)
-    }
-    else {
-      this.isreverse = true;
-      this.nextClick();
-      return;
-    }
-  }
-  nextClick = () => {
-    if (this.index < this.timeline.length) {
-      this.index++;
-      this.props.onrecord(Number(this.timeline.slice(this.index, this.timeline.length).slice(0, 1)));
-      this.props.onrecordtop(Number(this.timetypeline.slice(this.index, this.timeline.length).slice(0, 1)), this.timearrline.slice(this.index, this.timeline.length).slice(0, 1)[0]);
-      this.setState({ arr : this.props.timeArr });
-      this.createShape(this.props.timeType);
-      this.createNext(this.props.timeNextType);
-      console.log(this.index)
-    }
-    else {
-      this.isreverse = false;
-      this.previousClick();
-      this.setState({ arr: this.storagearr });
-      return;
-    }
-  }
-  reStart = () => {
-    this.setState({ arr: this.props.timeArr });
-    this.createShape(this.props.beforeType);
-    this.createNext(this.props.type);
-    this.time = setInterval(() => this.shapeDivDown(), 500);
-  }
+  // previousClick = () => {
+  //   clearInterval(this.time);
+  //   if (this.index > 0) {
+  //     this.index--;
+  //     this.props.onrecord(Number(this.timeline.slice(0, this.index + 1).slice(this.index, this.index + 1)));
+  //     this.props.onrecordtop(Number(this.timetypeline.slice(0, this.index + 1).slice(this.index, this.index + 1)), this.timearrline.slice(0, this.index + 1).slice(this.index, this.index + 1)[0]);
+  //     this.setState({ arr: this.props.timeArr });
+  //     this.createShape(this.props.timeType);
+  //     this.createNext(this.props.timeNextType);
+  //     // console.log(this.index)
+  //   }
+  //   else {
+  //     this.isreverse = true;
+  //     this.nextClick();
+  //     return;
+  //   }
+  // }
+  // nextClick = () => {
+  //   if (this.index < this.timeline.length) {
+  //     this.index++;
+  //     this.props.onrecord(Number(this.timeline.slice(this.index, this.timeline.length).slice(0, 1)));
+  //     this.props.onrecordtop(Number(this.timetypeline.slice(this.index, this.timeline.length).slice(0, 1)), this.timearrline.slice(this.index, this.timeline.length).slice(0, 1)[0]);
+  //     this.setState({ arr: this.props.timeArr });
+  //     this.createShape(this.props.timeType);
+  //     this.createNext(this.props.timeNextType);
+  //     // console.log(this.index)
+  //   }
+  //   else {
+  //     this.isreverse = false;
+  //     this.previousClick();
+  //     this.setState({ arr: this.storagearr });
+  //     return;
+  //   }
+  // }
+  // reStart = () => {
+  //   this.setState({ arr: this.props.timeArr });
+  //   this.createShape(this.props.beforeType);
+  //   this.createNext(this.props.type);
+  //   this.time = setInterval(() => this.shapeDivDown(), 500);
+  // }
   onKeyDown = (e) => {
     let { x, y } = this.props;
     let curx = x;
@@ -102,7 +103,7 @@ class App extends React.Component {
           this.createNext(this.props.type);
           this.time = setInterval(() => this.shapeDivDown(), 500);
           this.spaceCount++;
-          this.setState({ arr: this.storagearr });
+          // this.setState({ arr: this.storagearr });
         }
         else {
           this.spaceCount = 0;
@@ -117,12 +118,15 @@ class App extends React.Component {
     }
   }
   componentDidMount() {
-    this.storagearr = this.state.arr;
-    this.props.onrecordtop(this.props.beforeType, this.state.arr);
-    this.props.onrecord(this.props.type);
-    this.timearrline.push(this.state.arr)
-    console.log(box_selector.composeresult)
+    // this.storagearr = this.state.arr;
+  
+    // this.props.onrecordtop(this.props.type);
+    this.props.onrecord(this.props.beforeType,this.props.type,this.props.arr);
+    // this.timearrline.push(this.state.arr)
+    // console.log(box_selector.composeresult);
     document.addEventListener('keydown', this.onKeyDown);
+
+    let comresult = compose(box_selector(InitState));
   }
   createShape(beforeType) {
     this.setState({
@@ -133,39 +137,45 @@ class App extends React.Component {
       )
     })
   }
+
+  // comready(state){
+  //   box_selector
+  // }
+
   shapeDivDown() {
+
+
+    this.index++;
     let nextX = this.props.x + 1;
     let nextY = this.props.y;
     if (this.isCollision(nextX, nextY)) {
-      this.setState({
-        arr: this.state.arr.map((itemRow, indexRow) =>
-          itemRow.map((item, index) =>
-            SHAPE_ARR[this.props.beforeType][this.props.collisionCount].some(([x, y]) => (x + this.props.x) === indexRow && (y + this.props.y) === index) ? 1 : item
-          )
-        )
-      });
-
-      this.timeline.push(this.props.type);
-      this.timearrline.push(this.state.arr);
-      this.timetypeline.push(this.props.beforeType);
-      this.index = this.timeline.length - 1;
-      this.storagearr = this.state.arr;
-      const FULL = this.state.arr.filter((val) => !val.every((value) => value === 1));
+      let newarr = this.props.arr.map((itemRow, indexRow) =>itemRow.map((item, index) =>SHAPE_ARR[this.props.beforeType][this.props.collisionCount].some(([x, y]) => (x + this.props.x) === indexRow && (y + this.props.y) === index) ? 1 : item));
+      this.props.onchangeArr(newarr);
+      // console.log(this.props.arr)
+      const FULL = this.props.arr.filter((val) => !val.every((value) => value === 1));
       const FULL_LENGTH = 20 - FULL.length;
       if (FULL_LENGTH > 0) {
         this.setState({ score: this.state.score + SCORE_LIST[FULL_LENGTH] })
       }
-      this.setState({ arr: new Array(FULL_LENGTH).fill(new Array(10).fill(0)).concat(FULL) });
+
+      this.props.onchangeArr(new Array(FULL_LENGTH).fill(new Array(10).fill(0)).concat(FULL));
       this.props.initKeyDown(-1, 3);
       this.props.changeBeforeType(this.props.type);
       this.createShape(this.props.beforeType);
       this.props.changeType(parseInt(Math.random() * SHAPE_ARR.length));
       this.createNext(this.props.type);
       this.props.changeCount(0);
+
+      let comresult = compose(box_selector(InitState))
+      console.log(this.props.timeNextType);
+      console.log(this.props.timeType);
+      console.log(this.props.timeArr);
+
+
     } else {
       this.props.initKeyDown(this.props.x + 1, this.props.y)
     }
-    const GAME_OVER = this.state.arr[0].some((val) => val === 1);
+    const GAME_OVER = this.props.arr[0].some((val) => val === 1);
     if (GAME_OVER) {
       alert("game over 得分为" + this.state.score);
       clearInterval(this.time);
@@ -176,7 +186,7 @@ class App extends React.Component {
     SHAPE_ARR[this.props.beforeType][this.props.collisionCount].forEach((value) => {
       let checkRow = x + value[0];
       let checkCol = y + value[1];
-      if (checkCol < 0 || checkCol > 9 || checkRow > 19 || this.state.arr[checkRow][checkCol] === 1) {
+      if (checkCol < 0 || checkCol > 9 || checkRow > 19 || this.props.arr[checkRow][checkCol] === 1) {
         collision = true;
       }
     })
@@ -205,7 +215,7 @@ class App extends React.Component {
     })
   }
   render() {
-    let { x, y } = this.props;
+    let { x, y, arr } = this.props;
     // console.log(x,y)
     const BACK_COLOR = {
       0: "lightgrey",
@@ -229,7 +239,7 @@ class App extends React.Component {
         <div style={{ display: 'flex', alignItems: 'inherit' }}>
           <div style={{ width: "300px", height: " 600px", border: "1px solid white", position: "absolute", top: "0px", left: "0px", display: "grid", gridTemplateColumns: "repeat(10,30px)", gridTemplateRows: "repeat(20,30px)" }}>
             {
-              this.state.arr.map((rowItem, rowIndex) =>
+              arr.map((rowItem, rowIndex) =>
                 rowItem.map((item, index) => {
                   return <div
                     key={`${rowIndex} ${index}`}
@@ -241,7 +251,7 @@ class App extends React.Component {
             }
           </div>
           <div style={style}>
-            <Slider className = 'Slider' vertical defaultValue={0} step={1} max={this.timeline.length} onChange={ this.isreverse ? this.nextClick : this.previousClick} reverse={this.isreverse}/>
+            <Slider className='Slider' vertical defaultValue={0} step={1} max={this.timeline.length} onChange={this.isreverse ? this.nextClick : this.previousClick} reverse={this.isreverse} />
           </div>
         </div>
         <div style={{ position: "absolute", top: x * 30 + 1, left: y * 30 + 1, display: "grid", gridTemplateColumns: "repeat(4,30px)", gridTemplateRows: "repeat(4,30px)" }}>
@@ -298,6 +308,7 @@ function mapStateToProps(state) {
     timeNextType: state.time.timeNextType,
     timeType: state.time.timeType,
     timeArr: state.time.timeArr,
+    arr: state.box.arr,
   }
 }
 function mapDispatchToProps(dispatch) {
@@ -308,8 +319,9 @@ function mapDispatchToProps(dispatch) {
     changeCount: (collisionCount) => dispatch(box_action_creator.changeCount(collisionCount)),
     changeType: (type) => dispatch(box_action_creator.changeType(type)),
     changeBeforeType: (pretype) => dispatch(box_action_creator.changeBeforeType(pretype)),
-    onrecord: (timeNextType) => dispatch(time_action.record(timeNextType)),
-    onrecordtop: (timeType, timeArr) => dispatch(time_action.recordtop(timeType, timeArr)),
+    onrecord: (timeType,timeNextType,timeArr) => dispatch(time_action.record(timeType,timeNextType,timeArr)),
+    // onrecordtop: (timeArr) => dispatch(time_action.recordtop(timeArr)),
+    onchangeArr: (arr) => dispatch(box_action_creator.changeArr(arr)),
   }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(App);

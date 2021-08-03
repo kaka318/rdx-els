@@ -11,6 +11,8 @@ export default function(state = boxInitialState, action){
             return {...state,type:payload.type};
         case 'changebeforetype':
             return {...state,beforeType:payload.pretype};
+        case 'changearr':
+            return {...state,arr:payload.arr}
         default:
             return state;
 
