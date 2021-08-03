@@ -1,13 +1,17 @@
-const RECORD = 'RECORD';
+const recordBeforeShape = 'recordBeforeShape';
 const RECORDTOP = 'RECORDTOP';
-const record = (timeType,timeNextType,timeArr) => ({
-  type:'record',
-  payload:{timeType,timeNextType,timeArr},
+const recordBeforeShape = (timeType) => ({
+  type:'recordBeforeShape',
+  payload:{timeType},
 })
-// const recordtop = (timeType,timeNextType,timeArr) => ({
-//     type:'recordtop',
-//     payload:{timeType},
-// })
+const recordShape = (timeNextType) => ({
+    type:'recordShape',
+    payload:{timeNextType},
+})
+const recordArr = (timeArr) => ({
+  type:'recordArr',
+  payload:{timeArr},
+})
 export default{
     record,RECORD,
     // recordtop,RECORDTOP,

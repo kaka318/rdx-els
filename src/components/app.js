@@ -118,15 +118,8 @@ class App extends React.Component {
     }
   }
   componentDidMount() {
-    // this.storagearr = this.state.arr;
-  
-    // this.props.onrecordtop(this.props.type);
     this.props.onrecord(this.props.beforeType,this.props.type,this.props.arr);
-    // this.timearrline.push(this.state.arr)
-    // console.log(box_selector.composeresult);
     document.addEventListener('keydown', this.onKeyDown);
-
-    let comresult = compose(box_selector(InitState));
   }
   createShape(beforeType) {
     this.setState({
@@ -138,9 +131,9 @@ class App extends React.Component {
     })
   }
 
-  // comready(state){
-  //   box_selector
-  // }
+  comready(state){
+    box_selector()
+  }
 
   shapeDivDown() {
 
@@ -166,7 +159,9 @@ class App extends React.Component {
       this.createNext(this.props.type);
       this.props.changeCount(0);
 
-      let comresult = compose(box_selector(InitState))
+      
+
+      let comresult = compose((InitState));
       console.log(this.props.timeNextType);
       console.log(this.props.timeType);
       console.log(this.props.timeArr);

@@ -7,10 +7,12 @@ export const InitState = {
 export default function(state = InitState,action){
   let {type,payload} = action;
   switch(type){
-    case 'record':
-      return {timeType:payload.timeType,timeNextType:payload.timeNextType,timeArr:payload.timeArr};
-    // case 'recordtop':
-    //   return {...state};
+    case 'recordBeforeShape':
+      return {...state,timeType:payload.timeType};
+    case 'recordShape':
+      return {...state,timeNextType:payload.timeNextType};
+    case 'recordArr':
+      return {...state,timeArr:payload.timeArr}
     default:
       return state;
   }
