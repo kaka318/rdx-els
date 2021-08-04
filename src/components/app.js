@@ -4,8 +4,9 @@ import { connect } from 'react-redux'
 import { compose } from 'redux';
 import box_action_creator from '../actions/box_action_creator';
 import time_action from '../actions/time_action';
-import box_selector from '../selectors/box_selector';
-import { InitState } from '../reducers/timetravel_reducer'
+// import box_selector,{recordArr,recordBeforeShape,recordShape,InitState,actions} from '../selectors/box_selector';
+// import timetravel_reducer, { InitState } from '../reducers/timetravel_reducer'
+import { boxInitialState } from '../reducers';
 export const SHAPE_ARR = [
   [[[0, 1], [1, 1], [2, 1], [3, 1]], [[1, 0], [1, 1], [1, 2], [1, 3]]],//一
   [[[1, 0], [0, 1], [1, 1], [2, 1]], [[1, 0], [1, 1], [1, 2], [0, 1]], [[1, 2], [0, 1], [1, 1], [2, 1]], [[1, 0], [1, 1], [1, 2], [2, 1]]], // T
@@ -21,13 +22,54 @@ const SCORE_LIST = {
   3: 60,
   4: 100
 }
+const InitState = {
+  timeNextType: 0,
+  timeArr: [],
+  timeType: 0,
+}
+const recordBeforeShape = (timeType) => ({
+  type: 'recordBeforeShape',
+  payload: { timeType },
+})
+const recordShape = (timeNextType) => ({
+  type: 'recordShape',
+  payload: { timeNextType },
+})
+const recordArr = (timeArr) => ({
+  type: 'recordArr',
+  payload: { timeArr },
+})
+
+
+// console.log(actions)
+const aFuns = (actions) => {
+  let comFuns = actions.map((action) => {
+    switch (action.type) {
+      case 'recordBeforeShape':
+        return (state)=>{
+            return { ...state, timeType: action.payload.timeType };
+          }
+      case 'recordShape':
+        return (state)=>{
+          return { ...state, timeNextType: action.payload.timeNextType };
+        }
+      case 'recordArr':
+        return (state)=>{
+          return { ...state, timeArr: action.payload.timeArr };
+        }
+      default:
+        return null;
+    }
+  })
+  let comresult = compose(...comFuns);
+  return comresult(InitState);
+}
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       score: 0,
       nextArr: new Array(4).fill(new Array(4).fill(0)),
-      // arr: new Array(20).fill(new Array(10).fill(0)),
       squareArr: new Array(4).fill(new Array(4).fill(0)),
     };
   }
@@ -118,7 +160,6 @@ class App extends React.Component {
     }
   }
   componentDidMount() {
-    this.props.onrecord(this.props.beforeType,this.props.type,this.props.arr);
     document.addEventListener('keydown', this.onKeyDown);
   }
   createShape(beforeType) {
@@ -131,20 +172,65 @@ class App extends React.Component {
     })
   }
 
-  comready(state){
-    box_selector()
-  }
+  // comready(state){
+  //   box_selector()
+  // }
+  // comFuns(arrFuns){
+  //   let cFuns = arrFuns.map()
+  // }
+
+  // arrFuns=(state)=>{
+  //   return state + 2;
+  // }
+
 
   shapeDivDown() {
 
-
-    this.index++;
+    // this.arrFuns(InitState)
+    // let reco = this.timeline.map(val=>compose(val)(1))
     let nextX = this.props.x + 1;
     let nextY = this.props.y;
     if (this.isCollision(nextX, nextY)) {
-      let newarr = this.props.arr.map((itemRow, indexRow) =>itemRow.map((item, index) =>SHAPE_ARR[this.props.beforeType][this.props.collisionCount].some(([x, y]) => (x + this.props.x) === indexRow && (y + this.props.y) === index) ? 1 : item));
+      
+      
+      // this.props.onrecordBeforeShape(this.props.beforeType);
+      // this.props.onrecordShape(this.props.type);
+      // this.props.onrecordArr(this.props.arr);
+      // console.log(this.props.timeArr);
+      // console.log(box_selector)
+      // console.log()
+      // this.index++;
+      // this.timeline.push(Array(this.index).fill(this.f1));
+      // let arrFuns=(state)=>{
+      //   this.props.onrecordBeforeShape(this.props.beforeType);
+      //   this.props.onrecordShape(this.props.type);
+      //   this.props.onrecordArr(this.props.arr);
+      //   return state;
+      // }
+      // this.timeline.push(this.arrFuns);
+      // console.log(aFuns(actions))
+      // console.log(this.timeline)
+
+      // let recompose = compose(...this.timeline);
+      // console.log(recompose(5));
+      // console.log(this.timeline);
+      // console.log(this.timeline.map((val,idx)=>val));
+      // console.log(this.index);
+      // console.log(this.timeline[this.index-1])
+      // let recompose = compose(this.timeline[this.index-1])(boxInitialState);
+      // console.log(recompose);
+      let newarr = this.props.arr.map((itemRow, indexRow) => itemRow.map((item, index) => SHAPE_ARR[this.props.beforeType][this.props.collisionCount].some(([x, y]) => (x + this.props.x) === indexRow && (y + this.props.y) === index) ? 1 : item));
       this.props.onchangeArr(newarr);
       // console.log(this.props.arr)
+      // console.log(this.props.arr)
+
+      // const actions = [recordBeforeShape(this.props.beforeType)];
+      const actions = [recordBeforeShape(this.props.beforeType), recordShape(this.props.type), recordArr(this.props.arr)];
+      // console.log(actions);
+
+      console.log(aFuns(actions))
+      // console.log(InitState.timeType);
+      // console.log()
       const FULL = this.props.arr.filter((val) => !val.every((value) => value === 1));
       const FULL_LENGTH = 20 - FULL.length;
       if (FULL_LENGTH > 0) {
@@ -159,12 +245,6 @@ class App extends React.Component {
       this.createNext(this.props.type);
       this.props.changeCount(0);
 
-      
-
-      let comresult = compose((InitState));
-      console.log(this.props.timeNextType);
-      console.log(this.props.timeType);
-      console.log(this.props.timeArr);
 
 
     } else {
@@ -297,13 +377,13 @@ function mapStateToProps(state) {
   return {
     x: state.box.x,
     y: state.box.y,
+    arr: state.box.arr,
     collisionCount: state.box.collisionCount,
     type: state.box.type,
     beforeType: state.box.beforeType,
-    timeNextType: state.time.timeNextType,
-    timeType: state.time.timeType,
-    timeArr: state.time.timeArr,
-    arr: state.box.arr,
+    // timeNextType: state.time.timeNextType,
+    // timeType: state.time.timeType,
+    // timeArr: state.time.timeArr,
   }
 }
 function mapDispatchToProps(dispatch) {
@@ -314,9 +394,10 @@ function mapDispatchToProps(dispatch) {
     changeCount: (collisionCount) => dispatch(box_action_creator.changeCount(collisionCount)),
     changeType: (type) => dispatch(box_action_creator.changeType(type)),
     changeBeforeType: (pretype) => dispatch(box_action_creator.changeBeforeType(pretype)),
-    onrecord: (timeType,timeNextType,timeArr) => dispatch(time_action.record(timeType,timeNextType,timeArr)),
-    // onrecordtop: (timeArr) => dispatch(time_action.recordtop(timeArr)),
     onchangeArr: (arr) => dispatch(box_action_creator.changeArr(arr)),
+    // onrecordBeforeShape: (timeType) => dispatch(time_action.recordBeforeShape(timeType)),
+    // onrecordShape: (timeNextType) => dispatch(time_action.recordShape(timeNextType)),
+    // onrecordArr: (timeArr) => dispatch(time_action.recordArr(timeArr)),
   }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(App);

@@ -11,7 +11,7 @@ export const boxInitialState = {
 };
 export const reducers = combineReducers({
     box:boxReducer,
-    time:timeRedecer,
+    // time:timeRedecer,
 })
 
 // export default reducers(
