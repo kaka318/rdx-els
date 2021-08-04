@@ -4,8 +4,6 @@ import { connect } from 'react-redux'
 import { compose } from 'redux';
 import box_action_creator from '../actions/box_action_creator';
 import time_action from '../actions/time_action';
-// import box_selector,{recordArr,recordBeforeShape,recordShape,InitState,actions} from '../selectors/box_selector';
-// import timetravel_reducer, { InitState } from '../reducers/timetravel_reducer'
 import { boxInitialState } from '../reducers';
 export const SHAPE_ARR = [
   [[[0, 1], [1, 1], [2, 1], [3, 1]], [[1, 0], [1, 1], [1, 2], [1, 3]]],//一
@@ -24,8 +22,11 @@ const SCORE_LIST = {
 }
 const InitState = {
   timeNextType: 0,
-  timeArr: [],
+  // timeArr: [],
+  timeFull : 0,
+  timePosition : [],
   timeType: 0,
+
 }
 const recordBeforeShape = (timeType) => ({
   type: 'recordBeforeShape',
@@ -39,9 +40,14 @@ const recordArr = (timeArr) => ({
   type: 'recordArr',
   payload: { timeArr },
 })
-
-
-// console.log(actions)
+const recordFUll = (timeFull) => ({
+  type: 'recordArr',
+  payload: { timeFull },
+})
+const recordPosition = (timePosition) => ({
+  type: 'recordArr',
+  payload: { timePosition },
+})
 const aFuns = (actions) => {
   let comFuns = actions.map((action) => {
     switch (action.type) {
@@ -57,6 +63,16 @@ const aFuns = (actions) => {
         return (state)=>{
           return { ...state, timeArr: action.payload.timeArr };
         }
+      case 'recordFUll':{
+        return (state)=>{
+          return { ...state, timeFull: action.payload.timeFull };
+        }
+      }
+      case 'recordPosition':{
+        return (state)=>{
+          return { ...state, timePosition: action.payload.timePosition };
+        }
+      }
       default:
         return null;
     }
@@ -225,7 +241,7 @@ class App extends React.Component {
       // console.log(this.props.arr)
 
       // const actions = [recordBeforeShape(this.props.beforeType)];
-      const actions = [recordBeforeShape(this.props.beforeType), recordShape(this.props.type), recordArr(this.props.arr)];
+      const actions = [recordBeforeShape(this.props.beforeType), recordShape(this.props.type), recordArr(this.props.arr),recordFUll(),recordPosition()];
       // console.log(actions);
 
       console.log(aFuns(actions))
