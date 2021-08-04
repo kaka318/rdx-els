@@ -36,16 +36,16 @@ const recordShape = (timeNextType) => ({
   type: 'recordShape',
   payload: { timeNextType },
 })
-const recordArr = (timeArr) => ({
-  type: 'recordArr',
-  payload: { timeArr },
-})
+// const recordArr = (timeArr) => ({
+//   type: 'recordArr',
+//   payload: { timeArr },
+// })
 const recordFUll = (timeFull) => ({
-  type: 'recordArr',
+  type: 'recordFUll',
   payload: { timeFull },
 })
 const recordPosition = (timePosition) => ({
-  type: 'recordArr',
+  type: 'recordPosition',
   payload: { timePosition },
 })
 const aFuns = (actions) => {
@@ -59,10 +59,10 @@ const aFuns = (actions) => {
         return (state)=>{
           return { ...state, timeNextType: action.payload.timeNextType };
         }
-      case 'recordArr':
-        return (state)=>{
-          return { ...state, timeArr: action.payload.timeArr };
-        }
+      // case 'recordArr':
+      //   return (state)=>{
+      //     return { ...state, timeArr: action.payload.timeArr };
+      //   }
       case 'recordFUll':{
         return (state)=>{
           return { ...state, timeFull: action.payload.timeFull };
@@ -80,6 +80,14 @@ const aFuns = (actions) => {
   let comresult = compose(...comFuns);
   return comresult(InitState);
 }
+let timeArr = new Array(20).fill(new Array(10).fill(0));
+// console.log(timeArr)
+const createArr=()=>{
+  timeArr.map((itemRow,indexRow)=>itemRow.map((item,index)=>{
+    InitState.timePosition[this.props.beforeType][this.props.collisionCount].some(([x,y])=>x===indexRow && y === index ? 1:item)
+  }))
+  console.log(timeArr);
+}
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -89,15 +97,7 @@ class App extends React.Component {
       squareArr: new Array(4).fill(new Array(4).fill(0)),
     };
   }
-  storagearr = [];
-  spaceCount = 0;
-  collision = false;
-  time = 0;
-  timeline = [];
-  index = 0;
-  timearrline = [];
-  timetypeline = [];
-  isreverse = false;
+  timelen = 0;
   // previousClick = () => {
   //   clearInterval(this.time);
   //   if (this.index > 0) {
@@ -161,7 +161,6 @@ class App extends React.Component {
           this.createNext(this.props.type);
           this.time = setInterval(() => this.shapeDivDown(), 500);
           this.spaceCount++;
-          // this.setState({ arr: this.storagearr });
         }
         else {
           this.spaceCount = 0;
@@ -187,72 +186,23 @@ class App extends React.Component {
       )
     })
   }
-
-  // comready(state){
-  //   box_selector()
-  // }
-  // comFuns(arrFuns){
-  //   let cFuns = arrFuns.map()
-  // }
-
-  // arrFuns=(state)=>{
-  //   return state + 2;
-  // }
-
-
   shapeDivDown() {
-
-    // this.arrFuns(InitState)
-    // let reco = this.timeline.map(val=>compose(val)(1))
+    createArr();
+    this.timelen++;
     let nextX = this.props.x + 1;
     let nextY = this.props.y;
     if (this.isCollision(nextX, nextY)) {
-      
-      
-      // this.props.onrecordBeforeShape(this.props.beforeType);
-      // this.props.onrecordShape(this.props.type);
-      // this.props.onrecordArr(this.props.arr);
-      // console.log(this.props.timeArr);
-      // console.log(box_selector)
-      // console.log()
-      // this.index++;
-      // this.timeline.push(Array(this.index).fill(this.f1));
-      // let arrFuns=(state)=>{
-      //   this.props.onrecordBeforeShape(this.props.beforeType);
-      //   this.props.onrecordShape(this.props.type);
-      //   this.props.onrecordArr(this.props.arr);
-      //   return state;
-      // }
-      // this.timeline.push(this.arrFuns);
-      // console.log(aFuns(actions))
-      // console.log(this.timeline)
-
-      // let recompose = compose(...this.timeline);
-      // console.log(recompose(5));
-      // console.log(this.timeline);
-      // console.log(this.timeline.map((val,idx)=>val));
-      // console.log(this.index);
-      // console.log(this.timeline[this.index-1])
-      // let recompose = compose(this.timeline[this.index-1])(boxInitialState);
-      // console.log(recompose);
       let newarr = this.props.arr.map((itemRow, indexRow) => itemRow.map((item, index) => SHAPE_ARR[this.props.beforeType][this.props.collisionCount].some(([x, y]) => (x + this.props.x) === indexRow && (y + this.props.y) === index) ? 1 : item));
       this.props.onchangeArr(newarr);
-      // console.log(this.props.arr)
-      // console.log(this.props.arr)
-
-      // const actions = [recordBeforeShape(this.props.beforeType)];
-      const actions = [recordBeforeShape(this.props.beforeType), recordShape(this.props.type), recordArr(this.props.arr),recordFUll(),recordPosition()];
-      // console.log(actions);
-
-      console.log(aFuns(actions))
-      // console.log(InitState.timeType);
-      // console.log()
       const FULL = this.props.arr.filter((val) => !val.every((value) => value === 1));
-      const FULL_LENGTH = 20 - FULL.length;
+      const FULL_LENGTH = 20 - FULL.length;let position = SHAPE_ARR[this.props.beforeType][this.props.collisionCount].map((val)=>val.map((item,index,self)=>{if(index===0){return item + this.props.x}else{return item + this.props.y}}));
+      // console.log(SHAPE_ARR[this.props.beforeType][this.props.collisionCount]);
+      // console.log(position);
+      const actions = [recordBeforeShape(this.props.beforeType), recordShape(this.props.type),recordFUll(FULL_LENGTH),recordPosition(position)];
+      console.log(aFuns(actions))
       if (FULL_LENGTH > 0) {
         this.setState({ score: this.state.score + SCORE_LIST[FULL_LENGTH] })
       }
-
       this.props.onchangeArr(new Array(FULL_LENGTH).fill(new Array(10).fill(0)).concat(FULL));
       this.props.initKeyDown(-1, 3);
       this.props.changeBeforeType(this.props.type);
@@ -260,9 +210,6 @@ class App extends React.Component {
       this.props.changeType(parseInt(Math.random() * SHAPE_ARR.length));
       this.createNext(this.props.type);
       this.props.changeCount(0);
-
-
-
     } else {
       this.props.initKeyDown(this.props.x + 1, this.props.y)
     }
@@ -307,7 +254,6 @@ class App extends React.Component {
   }
   render() {
     let { x, y, arr } = this.props;
-    // console.log(x,y)
     const BACK_COLOR = {
       0: "lightgrey",
       1: "red",
@@ -342,7 +288,7 @@ class App extends React.Component {
             }
           </div>
           <div style={style}>
-            <Slider className='Slider' vertical defaultValue={0} step={1} max={this.timeline.length} onChange={this.isreverse ? this.nextClick : this.previousClick} reverse={this.isreverse} />
+            <Slider className='Slider' vertical defaultValue={0} step={1} max={this.timelen} onChange={this.isreverse ? this.nextClick : this.previousClick} reverse={this.isreverse} />
           </div>
         </div>
         <div style={{ position: "absolute", top: x * 30 + 1, left: y * 30 + 1, display: "grid", gridTemplateColumns: "repeat(4,30px)", gridTemplateRows: "repeat(4,30px)" }}>
